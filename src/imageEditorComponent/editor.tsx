@@ -227,7 +227,6 @@ function Editor() {
 
     const addNewTemplate = () => {
         getEditorInstance().then((editorInstance: any) => {
-            console.log(editorInstance)
             if (editorInstance.designState) {
                 console.log("Success", "Image added successfully")
                 const { designState, imageData } = editorInstance;
@@ -279,7 +278,6 @@ function Editor() {
 
     const downloadTemplate = () => {
         getEditorInstance().then((editorInstance: any) => {
-            console.log(editorInstance)
             if (editorInstance.designState && editorInstance.imageData) {
                 const { imageData } = editorInstance;
                 var a = document.createElement("a"); //Create <a>
@@ -296,7 +294,6 @@ function Editor() {
         setOldBgImage(bgImage)
         if (from == 'self') uploadNewBgFromLocal();
         else if (from == 'gallery') setShowBgImagesModal(true);
-        console.log(from)
         setAnchorEl(null);
     };
 
