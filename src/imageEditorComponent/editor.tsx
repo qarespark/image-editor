@@ -10,30 +10,6 @@ import './editor.scss';
 import waterMarks from './waterMarks';
 import HiddenUploadInput from './imageEditor/src/components/common/HiddenUploadInput';
 
-const baseURL = "https://qa.respark.in:8082/pcs-catalog/v1/templates";
-const baseDeleteURL = "https://qa.respark.in:8082/pcs-catalog/v1/template";
-const defaultConfig = {
-    tenantId: 0,
-    storeId: 0,
-    type: '413X284',
-    height: '200',
-    width: '400',
-    group: 'both'
-}
-
-const getEmptyTemplateObj = () => {
-    return {
-        "designState": {},
-        "image": "",
-        "index": 1,
-        "active": true,
-        "group": "both",
-        "category": "",
-        "storeId": defaultConfig.storeId,
-        "tenantId": defaultConfig.tenantId,
-        "type": defaultConfig.type
-    }
-}
 
 function AiOutlineCloseCircle(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path></svg>;
@@ -123,6 +99,31 @@ function BsTextareaT(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 16 16" height="1em" width="1em" {...props}><path fillRule="evenodd" d="M14 9a1 1 0 100-2 1 1 0 000 2zm0 1a2 2 0 100-4 2 2 0 000 4zM2 9a1 1 0 100-2 1 1 0 000 2zm0 1a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" /><path fillRule="evenodd" d="M1.5 2.5A1.5 1.5 0 013 1h10a1.5 1.5 0 011.5 1.5v4h-1v-4A.5.5 0 0013 2H3a.5.5 0 00-.5.5v4h-1v-4zm1 7v4a.5.5 0 00.5.5h10a.5.5 0 00.5-.5v-4h1v4A1.5 1.5 0 0113 15H3a1.5 1.5 0 01-1.5-1.5v-4h1z" clipRule="evenodd" /><path d="M11.434 4H4.566L4.5 5.994h.386c.21-1.252.612-1.446 2.173-1.495l.343-.011v6.343c0 .537-.116.665-1.049.748V12h3.294v-.421c-.938-.083-1.054-.21-1.054-.748V4.488l.348.01c1.56.05 1.963.244 2.173 1.496h.386L11.434 4z" /></svg>;
 }
 
+const defaultConfig = {
+    tenantId: 0,
+    storeId: 0,
+    type: '413X284',
+    height: '200',
+    width: '400',
+    group: 'both',
+    baseURL: "https://prod.respark.in:8082/pcs-catalog/v1/templates",
+    baseDeleteURL: "https://prod.respark.in:8082/pcs-catalog/v1/template"
+}
+
+const getEmptyTemplateObj = () => {
+    return {
+        "designState": {},
+        "image": "",
+        "index": 1,
+        "active": true,
+        "group": "both",
+        "category": "",
+        "storeId": defaultConfig.storeId,
+        "tenantId": defaultConfig.tenantId,
+        "type": defaultConfig.type
+    }
+}
+
 function Editor() {
     const [showEditor, setShowEditor] = useState(true);
     const [bgImage, setBgImage] = useState<any>(initialBg);
@@ -132,7 +133,7 @@ function Editor() {
     const [activeTemplate, setActiveTemplate] = useState<any>(getEmptyTemplateObj());
     const [showBgImagesModal, setShowBgImagesModal] = useState(false)
     const [oldBgImage, setOldBgImage] = useState(initialBg);
-    const imageResolutionsMode = '413X284';
+    const imageResolutionsMode = defaultConfig.type;
     const [savedTemplatesHeight, setSavedTemplatesListHeight] = useState('50vh');
     // const [bgImages, setBgImages] = useState<any>(bgImagesList); //used for collecting base64 urls of images
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -149,22 +150,47 @@ function Editor() {
     const editedImage = useRef<(imageFileInfo?: object, pixelRatio?: boolean, keepLoadingSpinnerShown?: boolean) => { imageData: object; designState: object; hideLoadingSpinner: (...args: any[]) => any }>();
 
     useEffect(() => {
+
+
         let config: any = localStorage.getItem('editor__config');
         if (config) {
             config = JSON.parse(config);
         } else {
             config = defaultConfig;
         }
+
+        let params = new URLSearchParams(window.location.search);
+        if (params) {
+            console.log(params)
+            if (params.get('env') == 'qa') {
+                config.baseURL = "https://qa.respark.in:8082/pcs-catalog/v1/templates";
+                config.baseDeleteURL = "https://qa.respark.in:8082/pcs-catalog/v1/template";
+            } else {
+                config.baseURL = "https://prod.respark.in:8082/pcs-catalog/v1/templates";
+                config.baseDeleteURL = "https://prod.respark.in:8082/pcs-catalog/v1/template";
+            }
+            if (params.get('t_id')) {
+                config.tenantId = params.get('t_id');
+            }
+            if (params.get('s_id')) {
+                config.storeId = params.get('s_id');
+            }
+            if (params.get('type')) {
+                config.type = params.get('type');
+            }
+        }
+        console.log(config)
         setEditorConfig(config)
         getTemplatesData(config)
-        axios.get(`${baseURL}/0/0`).then((templates: any) => {
+
+        axios.get(`${config.baseURL}/0/0`).then((templates: any) => {
             setResparkTemplates(templates.data.reverse())
         });
     }, [])
 
     const getTemplatesData = (config: any) => {
         if (config.tenantId != 0) {
-            axios.get(`${baseURL}/${config.tenantId}/${config.storeId}`).then((response: any) => {
+            axios.get(`${config.baseURL}/${config.tenantId}/${config.storeId}`).then((response: any) => {
                 setTemplatesList(response.data.reverse() || []);
             });
         }
@@ -233,7 +259,7 @@ function Editor() {
                 const template: any = { ...getEmptyTemplateObj() };
                 template.designState = { ...designState };
                 template.image = imageData.imageBase64;
-                axios.post(baseURL, template).then((response: any) => {
+                axios.post(editorConfig.baseURL, template).then((response: any) => {
                     setActiveTemplate({ ...activeTemplate, id: response.data.id })
                     if (editorConfig.tenantId == 0) {
                         const resparkTemplatesCopy: any = JSON.parse(JSON.stringify(resparkTemplates));
@@ -257,7 +283,7 @@ function Editor() {
                 const template = { ...activeTemplate }
                 template.designState = { ...designState };
                 template.image = imageData.imageBase64;
-                axios.post(baseURL, template).then((response: any) => {
+                axios.post(editorConfig.baseURL, template).then((response: any) => {
                     setActiveTemplate(response.data);
                     if (editorConfig.tenantId == 0) {
                         let tIndex = resparkTemplates.findIndex((t: any) => t.id == activeTemplate.id);
@@ -344,7 +370,7 @@ function Editor() {
     }
 
     const deleteCustomerTemplate = (event: any, template: any, templateIndex: number) => {
-        axios.delete(`${baseDeleteURL}/${template.id}`).then((response: any) => {
+        axios.delete(`${editorConfig.baseDeleteURL}/${template.id}`).then((response: any) => {
             if (editorConfig.tenantId == 0) {
                 const resparkTemplatesCopy: any = JSON.parse(JSON.stringify(resparkTemplates));
                 resparkTemplatesCopy.splice(templateIndex, 1);
@@ -724,16 +750,16 @@ function Editor() {
                                 <div className="category-image-wrap">
                                     <div className="cat-list-wrap">
                                         <div className={`category ${activeBgImgCategory == 'All' ? "active" : ""}`} onClick={() => setActiveBgImgCategory('All')}>All</div>
-                                        {Object.keys(BACKGROUND[imageResolutionsMode])?.map((imageCategory) => {
+                                        {Object.keys(BACKGROUND[editorConfig.type])?.map((imageCategory) => {
                                             return <div className={`category ${activeBgImgCategory == imageCategory ? "active" : ""}`} key={Math.random()} onClick={() => setActiveBgImgCategory(imageCategory)}>{imageCategory}</div>
                                         })}
                                     </div>
                                     {activeBgImgCategory == 'All' ? <>
                                         <div className="all">
-                                            {Object.keys(BACKGROUND[imageResolutionsMode])?.map((imageCategory) => {
+                                            {Object.keys(BACKGROUND[editorConfig.type])?.map((imageCategory) => {
                                                 return <div className="image-category-wrap" key={Math.random()}>
                                                     <div className="bg-images-list-wrap">
-                                                        {BACKGROUND[imageResolutionsMode][imageCategory]?.map((image) => {
+                                                        {BACKGROUND[editorConfig.type][imageCategory]?.map((image) => {
                                                             return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => setBgImage(image)}>
                                                                 <img src={image} />
                                                             </div>
@@ -745,7 +771,7 @@ function Editor() {
                                     </> : <>
                                         <div className="image-category-wrap">
                                             <div className="bg-images-list-wrap">
-                                                {BACKGROUND[imageResolutionsMode][activeBgImgCategory]?.map((image) => {
+                                                {BACKGROUND[editorConfig.type][activeBgImgCategory]?.map((image) => {
                                                     return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => setBgImage(image)}>
                                                         <img src={image} />
                                                     </div>
