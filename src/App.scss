@@ -1,0 +1,11 @@
+* {
+  transition: all 0.2s ease-in;
+  box-sizing: border-box !important;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
