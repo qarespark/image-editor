@@ -3,8 +3,6 @@ import React, { useRef, useState } from 'react';
 import Button from '../../../element/ui/core/button';
 import graphicsImages from '../../../../../graphics';
 import Dialog from '@mui/material/Dialog';
-
-
 import { useAnnotation, useStore } from '../../../hooks';
 import { FEEDBACK_STATUSES, TOOLS_IDS } from '../../../utils/constants';
 import { SET_FEEDBACK } from '../../../actions';

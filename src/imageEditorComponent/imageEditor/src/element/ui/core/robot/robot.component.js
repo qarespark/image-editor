@@ -2,29 +2,26 @@ import _extends from "@babel/runtime/helpers/extends";
 import _objectWithoutProperties from "@babel/runtime/helpers/objectWithoutProperties";
 import React from 'react';
 import PT from 'prop-types';
-import RobotWorried from '../../../icons/robot-worried';
-import RobotSad from '../../../icons/robot-sad';
-import RobotNeutral from '../../../icons/robot-neutral';
-import RobotHappy from '../../../icons/robot-happy';
 import { intrinsicComponent, objectValues } from '../../utils/functions';
 import { Status } from './types';
 import Styled from './robot.styles';
+
 var _excluded = ["status"];
 
 var getRobotIcon = function getRobotIcon(status) {
   switch (status) {
     case Status.Worried:
-      return React.createElement(RobotWorried, null);
+      return <div className="notification-icon">😟</div>;
 
     case Status.Sad:
-      return React.createElement(RobotSad, null);
+      return <div className="notification-icon">😩</div>;
 
     case Status.Neutral:
-      return React.createElement(RobotNeutral, null);
+      return <div className="notification-icon">😊</div>;
 
     case Status.Happy:
     default:
-      return React.createElement(RobotHappy, null);
+      return <div className="notification-icon">🥰</div>;
   }
 };
 

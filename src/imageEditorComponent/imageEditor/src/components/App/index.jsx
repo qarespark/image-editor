@@ -14,7 +14,7 @@ import {
   SHOW_LOADER,
   UPDATE_STATE,
 } from '../../actions';
-import FeedbackPopup from '../../components/FeedbackPopup';
+import NotificationPopup from '../../components/NotificationPopup';
 import loadImage from '../../utils/loadImage';
 import {
   usePhoneScreen,
@@ -304,7 +304,7 @@ const App = () => {
           </StyledCanvasAndTools>
         </StyledMainContent>
       )}
-      <FeedbackPopup />
+      <NotificationPopup />
     </StyledAppWrapper>
   );
 };

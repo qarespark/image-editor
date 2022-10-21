@@ -4,11 +4,13 @@ import ImageEditor, { TOOLS, TABS } from "./imageEditor/src"
 import { Menu, MenuItem } from '@mui/material';
 import initialBg from './initialBG';
 import textStyles, { Headings } from './textStyles';
-import BACKGROUND from './backgrounds';
+import BACKGROUND from './bg';
 import axios from "axios";
 import './editor.scss';
 import waterMarks from './waterMarks';
 import HiddenUploadInput from './imageEditor/src/components/common/HiddenUploadInput';
+import Compressor from 'compressorjs';
+import { config } from 'process';
 
 
 function AiOutlineCloseCircle(props) {
@@ -160,6 +162,9 @@ function Editor() {
         }
 
         let params = new URLSearchParams(window.location.search);
+        if (window.location.hostname == 'localhost') {
+            params = new URLSearchParams('?env=qa&t_id=0&s_id=0&type=413X284');
+        }
         if (params) {
             console.log(params)
             if (params.get('env') == 'qa') {
@@ -342,6 +347,22 @@ function Editor() {
         }
     }
 
+    const onSelectBgImage = (url: any) => {
+
+        const toDataURL = url => fetch(url)
+            .then(response => response.blob())
+            .then(blob => new Promise((resolve, reject) => {
+                const reader = new FileReader()
+                reader.onloadend = () => resolve(reader.result)
+                reader.onerror = reject
+                reader.readAsDataURL(blob)
+            }))
+        toDataURL(url)
+            .then(dataUrl => {
+                setBgImage(dataUrl)
+            })
+    }
+
     const getEditorInstance = async () => {
         const { current: saveFunction } = editedImage;
         if (!saveFunction) return;
@@ -404,6 +425,39 @@ function Editor() {
         e.target.value = '';
     }
 
+    const uploadMultipleFilesToS3 = (e: any) => {
+        if (e.target.files) {
+            const uploadedImages: any = [];
+            const filesArray = Array.from(e.target.files);
+            filesArray.map((file: any, fileIndex: number) => {
+                if (file.type.startsWith('image/')) {
+                    const compressOptions = { quality: 1 }
+                    new Compressor(file, {
+                        ...compressOptions,
+                        success(result: any) {
+                            const formData = new FormData();
+                            // The third parameter is required for server
+                            formData.append('file', result, result.name);
+                            formData.append("id", '0');
+                            formData.append("type", 'promotions');
+                            // Send the compressed image file to server with XMLHttpRequest.
+                            axios.post('https://qa.respark.in:8082/pcs-catalog/v1/s3/uploadwithtype', formData).then((res: any) => {
+                                uploadedImages.push(res.data)
+                                if (uploadedImages.length == filesArray.length) {
+                                    console.log(uploadedImages)
+                                }
+                            });
+                        },
+                        error(err) {
+                            console.log(err.message);
+                        },
+                    });
+                }
+            })
+        }
+        e.target.value = '';
+    }
+
     const textObj = {
         "fill": "black",
         "stroke": "#000000",
@@ -454,6 +508,7 @@ function Editor() {
             }
         })
     }
+
     const getEditorInstanceInConsole = () => {
         getEditorInstance().then((editorInstance: any) => {
             console.log(editorInstance.designState.annotations)
@@ -729,7 +784,7 @@ function Editor() {
                             </div>
                         </div>
                     </div>
-                    {/* <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={multiFileToBase64} multiple />
+                    {/* <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={uploadMultipleFilesToS3} multiple />
                     <button className="upload-multi-image" onClick={() => document.getElementById('background-img').click()}>Upload multi images</button> */}
                     <HiddenUploadInput
                         ref={uploadImgsInput}
@@ -760,8 +815,8 @@ function Editor() {
                                                 return <div className="image-category-wrap" key={Math.random()}>
                                                     <div className="bg-images-list-wrap">
                                                         {BACKGROUND[editorConfig.type][imageCategory]?.map((image) => {
-                                                            return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => setBgImage(image)}>
-                                                                <img src={image} />
+                                                            return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => onSelectBgImage(image)}>
+                                                                <img src={image} id={image} />
                                                             </div>
                                                         })}
                                                     </div>
@@ -772,8 +827,8 @@ function Editor() {
                                         <div className="image-category-wrap">
                                             <div className="bg-images-list-wrap">
                                                 {BACKGROUND[editorConfig.type][activeBgImgCategory]?.map((image) => {
-                                                    return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => setBgImage(image)}>
-                                                        <img src={image} />
+                                                    return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => onSelectBgImage(image)}>
+                                                        <img src={image} id={image} />
                                                     </div>
                                                 })}
                                             </div>

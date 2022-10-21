@@ -1,8 +1,4 @@
 export { Dot } from './dot';
-export { RobotHappy } from './robot-happy';
-export { RobotNeutral } from './robot-neutral';
-export { RobotSad } from './robot-sad';
-export { RobotWorried } from './robot-worried';
 export { Tick } from './tick';
 export { Cross } from './cross';
 export { Image } from './image';

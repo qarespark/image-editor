@@ -1582,3 +1582,30 @@
     }
   }
 }
+.respark_PopupContent-Robot {
+  background: var(--theme-bg) !important;
+  color: var(--primary-bg-color);
+  width: 76px;
+  height: 76px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 5px;
+  border: unset;
+  border-color: transparent !important;
+  .notification-icon {
+    font-size: 50px;
+  }
+}
+.respark_PopupContent-Label {
+  background: var(--theme-bg);
+  color: white !important;
+  padding: unset;
+  border-radius: 10px;
+  letter-spacing: 0.3px;
+  height: 76px;
+  span {
+    padding: 10px;
+    padding-left: 50px;
+  }
+}
