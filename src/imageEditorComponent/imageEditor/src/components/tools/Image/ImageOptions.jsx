@@ -175,7 +175,7 @@ const ImageOptions = () => {
         aria-describedby="alert-dialog-slide-description"
       >
         <div className='backdrop-modal-wrapper graphics-images-modal'>
-          <div className="backdrop-modal-content d-f-c graphics-images-content" style={{ height: `${showImagesModal ? '70vh' : '0'}` }} ref={modalRef}>
+          <div className="backdrop-modal-content d-f-c graphics-images-content" style={{ width: `${showImagesModal ? '400px' : '0'}` }} ref={modalRef}>
             <div className="heading-wrap">
               <div className="heading">Select graphics image</div>
               <div className="modal-close" onClick={() => setShowImagesModal(false)}><AiOutlineCloseCircle /></div>

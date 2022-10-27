@@ -105,8 +105,8 @@ const defaultConfig = {
     tenantId: 0,
     storeId: 0,
     type: '413X284',
-    height: '200',
-    width: '400',
+    height: 200,
+    width: 400,
     group: 'both',
     baseURL: "https://prod.respark.in:8082/pcs-catalog/v1/templates",
     baseDeleteURL: "https://prod.respark.in:8082/pcs-catalog/v1/template"
@@ -517,8 +517,8 @@ function Editor() {
 
     return (
         <>
-            <div className="editor-component-wrap">
-                <div className="editor-container">
+            <div className={`editor-component-wrap  ${showBgImagesModal ? "modal-opened" : ""}`}>
+                <div className="editor-container ">
                     <div className="page-heading">Respark Image Editor
                         <div className="get-instance" onClick={getEditorInstanceInConsole}>Get editor instance</div>
                         <div className="tenant-store-input">
@@ -784,8 +784,8 @@ function Editor() {
                             </div>
                         </div>
                     </div>
-                    {/* <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={uploadMultipleFilesToS3} multiple />
-                    <button className="upload-multi-image" onClick={() => document.getElementById('background-img').click()}>Upload multi images</button> */}
+                    <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={uploadMultipleFilesToS3} multiple />
+                    <button className="upload-multi-image" onClick={() => document.getElementById('background-img').click()}>Upload multi images</button>
                     <HiddenUploadInput
                         ref={uploadImgsInput}
                         onChange={onSelectImage}
@@ -796,7 +796,7 @@ function Editor() {
                         open={showBgImagesModal ? true : false}
                         onClick={onOutsideClick}
                     >
-                        <div className="backdrop-modal-content d-f-c" style={{ height: `${showBgImagesModal ? '440px' : '0'}` }} ref={bgImageModalRef}>
+                        <div className="backdrop-modal-content d-f-c" style={{ width: `${showBgImagesModal ? '400px' : '0'}` }} ref={bgImageModalRef}>
                             <div className="heading-wrap">
                                 <div className="heading">Select background image</div>
                                 <div className="modal-close" onClick={() => onChangeBg(null)}><AiOutlineCloseCircle /></div>
@@ -816,7 +816,7 @@ function Editor() {
                                                     <div className="bg-images-list-wrap">
                                                         {BACKGROUND[editorConfig.type][imageCategory]?.map((image) => {
                                                             return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => onSelectBgImage(image)}>
-                                                                <img src={image} id={image} />
+                                                                <img src={image} id={image} style={{ height: `${editorConfig.height / 2}px` }} />
                                                             </div>
                                                         })}
                                                     </div>
@@ -836,9 +836,9 @@ function Editor() {
                                     </>}
                                 </div>
                             </div>
-                            <div className='btn-wrap'>
+                            <div className='btn-wrap bg-change'>
                                 <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Upload from your computer <RiImageAddFill /></div>
-                                <div className='btn' onClick={() => onChangeBg(null)}>Cancel <IoMdCloseCircleOutline /></div>
+                                {/* <div className='btn' onClick={() => onChangeBg(null)}>Cancel <IoMdCloseCircleOutline /></div> */}
                                 <div className='btn' onClick={() => onChangeBg(bgImage)}>Apply <RiExchangeLine /></div>
                             </div>
                         </div>
@@ -870,7 +870,7 @@ function Editor() {
                         open={showAddTextModal ? true : false}
                         onClick={onOutsideClick}
                     >
-                        <div className="backdrop-modal-content d-f-c" style={{ height: `${showAddTextModal ? '340px' : '0'}` }} ref={testStyleModalRef}>
+                        <div className="backdrop-modal-content d-f-c" style={{ width: `${showAddTextModal ? '400px' : '0'}` }} ref={testStyleModalRef}>
                             <div className="modal-close" onClick={() => setShowAddTextModal(false)}><AiOutlineCloseCircle /></div>
                             <div className="heading">Click text to add to image</div>
                             <div className="modal-containt">
