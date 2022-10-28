@@ -89,13 +89,17 @@ function BsTextareaT(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 16 16" height="1em" width="1em" {...props}><path fillRule="evenodd" d="M14 9a1 1 0 100-2 1 1 0 000 2zm0 1a2 2 0 100-4 2 2 0 000 4zM2 9a1 1 0 100-2 1 1 0 000 2zm0 1a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" /><path fillRule="evenodd" d="M1.5 2.5A1.5 1.5 0 013 1h10a1.5 1.5 0 011.5 1.5v4h-1v-4A.5.5 0 0013 2H3a.5.5 0 00-.5.5v4h-1v-4zm1 7v4a.5.5 0 00.5.5h10a.5.5 0 00.5-.5v-4h1v4A1.5 1.5 0 0113 15H3a1.5 1.5 0 01-1.5-1.5v-4h1z" clipRule="evenodd" /><path d="M11.434 4H4.566L4.5 5.994h.386c.21-1.252.612-1.446 2.173-1.495l.343-.011v6.343c0 .537-.116.665-1.049.748V12h3.294v-.421c-.938-.083-1.054-.21-1.054-.748V4.488l.348.01c1.56.05 1.963.244 2.173 1.496h.386L11.434 4z" /></svg>;
 }
 
+function RiImageAddFill2(props) {
+    return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 24 24" height="1em" width="1em" {...props}><g><path fill="none" d="M0 0h24v24H0z" /><path d="M21 15v3h3v2h-3v3h-2v-3h-3v-2h3v-3h2zm.008-12c.548 0 .992.445.992.993v9.349A5.99 5.99 0 0 0 20 13V5H4l.001 14 9.292-9.293a.999.999 0 0 1 1.32-.084l.093.085 3.546 3.55a6.003 6.003 0 0 0-3.91 7.743L2.992 21A.993.993 0 0 1 2 20.007V3.993A1 1 0 0 1 2.992 3h18.016zM8 7a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" /></g></svg>;
+}
+
 const defaultConfig = {
-    tenantId: 0,
-    storeId: 0,
-    type: 'Large_Banner',
-    height: 284,
+    tenantId: 3,
+    storeId: 6,
+    type: 'Square_Banner',
+    height: 148,
     width: 413,
-    aspectRatio: 413 / 284,
+    aspectRatio: 413 / 148,
     group: 'both',
     from: '',
     baseURL: "https://prod.respark.in:8082/pcs-catalog/v1/templates",
@@ -151,9 +155,9 @@ function Editor() {
         }
 
         let params = new URLSearchParams(window.location.search);
-        if (window.location.hostname == 'localhost') {
-            params = new URLSearchParams('?env=qa&t_id=0&s_id=0&type=Large_Banner');
-        }
+        // if (window.location.hostname == 'localhost') {
+        //     params = new URLSearchParams('?env=qa&t_id=0&s_id=0&type=Large_Banner');
+        // }
         if (params) {
             console.log(params)
             if (params.get('env') == 'qa') {
@@ -177,14 +181,14 @@ function Editor() {
         setEditorConfig(config)
         getTemplatesData(config)
 
-        axios.get(`${config.baseURL}/0/0`).then((templates: any) => {
+        axios.get(`${config.baseURL}/0/0/${config.type}`).then((templates: any) => {
             setResparkTemplates(templates.data.reverse())
         });
     }, [])
 
     const getTemplatesData = (config: any) => {
         if (config.tenantId != 0) {
-            axios.get(`${config.baseURL}/${config.tenantId}/${config.storeId}`).then((response: any) => {
+            axios.get(`${config.baseURL}/${config.tenantId}/${config.storeId}/${config.type}`).then((response: any) => {
                 setTemplatesList(response.data.reverse() || []);
             });
         }
@@ -409,6 +413,7 @@ function Editor() {
                     reader.readAsDataURL(file);
                     reader.onload = (event: any) => {
                         base64Images.push(event.target.result);
+                        // base64Images.push(`aaa/${file.name}`);
                         if (i == filesArray.length - 1) {
                             console.log(base64Images)
                         }
@@ -809,7 +814,7 @@ function Editor() {
                         </div>
                     </div>
 
-                    {/* <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={uploadMultipleFilesToS3} multiple />
+                    {/* <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={multiFileToBase64} multiple />
                     <button className="upload-multi-image" onClick={() => document.getElementById('background-img').click()}>Upload multi images</button> */}
 
                     <HiddenUploadInput
@@ -863,7 +868,7 @@ function Editor() {
                                 </div>
                             </div>
                             <div className='btn-wrap bg-change'>
-                                <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Upload from your computer <RiImageAddFill /></div>
+                                <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Upload from your computer <RiImageAddFill2 /></div>
                                 {/* <div className='btn' onClick={() => onChangeBg(null)}>Cancel <IoMdCloseCircleOutline /></div> */}
                                 <div className='btn' onClick={() => onChangeBg(bgImage)}>Apply <RiExchangeLine /></div>
                             </div>
@@ -886,6 +891,7 @@ function Editor() {
                                     editorConfig={editorConfig}
                                     IMG={showCropper.img} />
                                 <div className="btn-wrap">
+                                    <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Change Image</div>
                                     <div className="btn" onClick={onCropSubmit}>Crop Image</div>
                                 </div>
                             </div>
