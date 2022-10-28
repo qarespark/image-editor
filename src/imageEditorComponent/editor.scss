@@ -126,10 +126,10 @@
   align-items: center;
   width: 100%;
   height: 100vh;
-  transition: all 0.2s ease-in;
+  transition: all 0.2s ease;
   &.modal-opened {
     // padding-left: 100px;
-    transition: all 0.2s ease-in;
+    transition: all 0.2s ease;
   }
   .editor-container {
     max-width: 1015px;
@@ -177,7 +177,7 @@
           margin-left: 0;
           font-size: 12px;
           letter-spacing: 0.2px;
-          transition: all 0.2s ease-in;
+          transition: all 0.2s ease;
           border-radius: 4px;
           color: black;
           font-weight: 500;
@@ -235,7 +235,7 @@
             }
             &:hover {
               box-shadow: 1px 3px 15px var(--primary-shadow-color);
-              transition: all 0.2s ease-in;
+              transition: all 0.2s ease;
               .image-wrap {
                 background: white;
                 color: var(--primary-color);
@@ -245,7 +245,7 @@
         }
         &:hover {
           box-shadow: 1px 3px 15px var(--primary-shadow-color);
-          transition: all 0.2s ease-in;
+          transition: all 0.2s ease;
           // transform: scale(1.04);
           .info {
             box-shadow: 1px 3px 15px var(--primary-shadow-color);
@@ -254,7 +254,7 @@
             margin-left: -579px;
             height: 704px;
             border: 1px solid #dee1ec;
-            transition: all 0.2s ease-in;
+            transition: all 0.2s ease;
             margin-top: -47px;
             cursor: help;
             overflow: auto;
@@ -383,7 +383,7 @@
               margin-left: 0;
               font-size: 12px;
               letter-spacing: 0.2px;
-              transition: all 0.2s ease-in;
+              transition: all 0.2s ease;
               border-radius: 4px;
               color: black;
             }
@@ -393,13 +393,13 @@
             }
             &:hover {
               box-shadow: 1px 3px 15px var(--primary-shadow-color);
-              transition: all 0.2s ease-in;
+              transition: all 0.2s ease;
               // transform: scale(1.04);
               .info {
                 width: 250px;
                 margin-left: -250px;
                 height: 45px;
-                transition: all 0.2s ease-in;
+                transition: all 0.2s ease;
               }
             }
           }
@@ -463,7 +463,7 @@
                   margin-left: 0;
                   font-size: 10px;
                   letter-spacing: 0.2px;
-                  transition: all 0.2s ease-in;
+                  transition: all 0.2s ease;
                   border-radius: 4px;
                 }
                 .icon-wrap {
@@ -472,13 +472,13 @@
                 }
                 &:hover {
                   box-shadow: 1px 3px 15px var(--primary-shadow-color);
-                  transition: all 0.2s ease-in;
+                  transition: all 0.2s ease;
                   // transform: scale(1.04);
                   .info {
                     width: 150px;
                     margin-left: -150px;
                     height: 50px;
-                    transition: all 0.2s ease-in;
+                    transition: all 0.2s ease;
                     padding-left: 15px;
                   }
                   svg {
@@ -703,7 +703,7 @@
                   right: 50px;
                   top: 0;
                   margin-left: 0;
-                  transition: all 0.2s ease-in;
+                  transition: all 0.2s ease;
                   position: absolute;
                   display: flex;
                   justify-content: center;
@@ -731,16 +731,16 @@
 
                 &[aria-selected="true"] {
                   background: #ffa1c5;
-                  transition: all 0.4s ease-in;
+                  transition: all 0.4s ease;
                   label {
-                    transition: all 0.4s ease-in;
+                    transition: all 0.4s ease;
                     color: white !important;
                   }
                   svg {
                     fill: white;
                     stroke: white;
                     color: white !important;
-                    transition: all 0.4s ease-in;
+                    transition: all 0.4s ease;
                   }
                 }
                 &:hover {
@@ -750,19 +750,19 @@
                     color: white !important;
                   }
                   svg {
-                    transition: all 0.2s ease-in;
+                    transition: all 0.2s ease;
                     color: white !important;
                   }
                   .info {
                     width: max-content;
                     right: 72px;
                     height: auto;
-                    transition: all 0.2s ease-in;
+                    transition: all 0.2s ease;
                     padding: 10px 16px;
 
                     div {
                       width: max-content;
-                      transition: all 0.2s ease-in;
+                      transition: all 0.2s ease;
                       padding: 12px 20px;
                     }
                   }
@@ -1220,7 +1220,7 @@
             font-family: Poppins;
             border: 1px solid var(--primary-bg-color);
             margin: 10px 0 10px;
-            transition: all 0.2s ease-in;
+            transition: all 0.2s ease;
             cursor: pointer;
             min-width: max-content;
 
@@ -1229,7 +1229,7 @@
               color: white;
               left: 0;
               right: 0;
-              transition: all 0.2s ease-in;
+              transition: all 0.2s ease;
               z-index: 7;
             }
             &:hover {
@@ -1237,7 +1237,7 @@
               transform: scale(1.02);
               background-color: #ffa1c5;
               color: white;
-              transition: all 0.2s ease-in;
+              transition: all 0.2s ease;
             }
           }
         }
@@ -1365,7 +1365,7 @@
             width: 22px;
             background: var(--primary-shadow-color);
             margin-right: 10px;
-            transition: all 0.2s ease-in;
+            transition: all 0.2s ease;
             border-radius: 4px;
             border: 1px solid var(--primary-btn-color);
             &:after {
@@ -1379,7 +1379,7 @@
               background: #ffffff;
               text-shadow: 0px;
               font-size: 32px;
-              transition: all 0.2s ease-in;
+              transition: all 0.2s ease;
               transform: rotate(315deg);
             }
             &::before {
@@ -1398,10 +1398,10 @@
           }
           &.active {
             .checkbox {
-              transition: all 0.2s ease-in;
+              transition: all 0.2s ease;
               background: var(--primary-color);
               &:after {
-                transition: all 0.2s ease-in;
+                transition: all 0.2s ease;
                 width: 13px;
                 height: 2px;
                 right: 0px;
@@ -1410,7 +1410,7 @@
               &::before {
                 width: 7px;
                 height: 2px;
-                transition: all 0.2s ease-in;
+                transition: all 0.2s ease;
                 left: 4px;
                 top: 9px;
               }
@@ -1471,7 +1471,7 @@
           font-weight: 500;
           font-family: Poppins;
           border: 1px solid #b0b6c2;
-          transition: all 0.2s ease-in;
+          transition: all 0.2s ease;
           cursor: pointer;
           border: unset;
           filter: drop-shadow(5px 6px 4px rgba(0, 0, 0, 0.2));
@@ -1481,7 +1481,7 @@
             box-shadow: 1px 3px 15px var(--primary-shadow-color);
             transform: scale(1.02);
             border-color: #ffa1c5;
-            transition: all 0.2s ease-in;
+            transition: all 0.2s ease;
           }
         }
         &.headings-wrap {
