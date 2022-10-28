@@ -16,13 +16,13 @@
 }
 @mixin background-btn {
   // filter: drop-shadow(4px 2px 6px #9a9a9a);
-  color: var(--primary-text-color);
   // box-shadow: 1px 1px 8px 0 var(--primary-shadow-color);
   // background: linear-gradient(
   //   273deg,
   //   rgb(0 0 0 / 0%) -81.71%,
   //   #ffffff8e 79.17%
   // );
+  color: var(--primary-text-color);
   background-color: var(--primary-bg-color);
   border-radius: 4px;
   cursor: pointer;
@@ -1337,6 +1337,7 @@
       }
     }
   }
+  &.cropper-modal,
   &.confirmation-modal {
     background: #04111d7a !important;
     .backdrop-modal-content {
@@ -1437,6 +1438,14 @@
           }
         }
       }
+    }
+  }
+  &.cropper-modal {
+    .modal-close {
+      left: unset;
+    }
+    .modal-containt {
+      padding-bottom: 0 !important;
     }
   }
   &.text-type-modal {
@@ -1582,7 +1591,7 @@
       width: 35px;
       height: 35px;
       background: var(--primary-shadow-color);
-      padding: 9px;
+      padding: 2px;
       border-radius: 20px;
       svg {
         width: 100%;
@@ -1623,4 +1632,7 @@
     padding: 10px;
     padding-left: 50px;
   }
+}
+.primary-btn {
+  @include background-btn;
 }

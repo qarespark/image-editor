@@ -21,10 +21,10 @@ import { Resize } from './Resize';
 import { Watermark } from './Watermark';
 
 export const TOOLS_ITEMS = {
-  [TOOLS_IDS.CROP]: {
-    id: TOOLS_IDS.CROP,
-    Item: Crop,
-  },
+  // [TOOLS_IDS.CROP]: {
+  //   id: TOOLS_IDS.CROP,
+  //   Item: Crop,
+  // },
   [TOOLS_IDS.ROTATE]: {
     id: TOOLS_IDS.ROTATE,
     Item: RotateButton,
@@ -121,7 +121,7 @@ export const TOOLS_ITEMS = {
 
 export const TABS_TOOLS = {
   [TABS_IDS.ADJUST]: [
-    TOOLS_IDS.CROP,
+    // TOOLS_IDS.CROP,
     TOOLS_IDS.ROTATE,
     TOOLS_IDS.FLIP_X,
     TOOLS_IDS.FLIP_Y,

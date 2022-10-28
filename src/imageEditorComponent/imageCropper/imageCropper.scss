@@ -1,0 +1,36 @@
+.image-cropper-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-direction: row;
+  position: relative;
+
+  .cropper {
+    position: relative;
+    height: 50vh;
+    width: 50%;
+  }
+
+  .viewer {
+    height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+  }
+
+  .output {
+    position: relative;
+    width: 300px;
+    overflow: hidden;
+    box-shadow: 0 0 32px rgba(0, 0, 0, 0.3);
+  }
+
+  .output img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: top left;
+  }
+}

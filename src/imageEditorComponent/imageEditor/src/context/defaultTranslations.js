@@ -15,7 +15,7 @@ export default {
   "zoomInTitle": "Zoom in",
   "zoomOutTitle": "Zoom out",
   "toggleZoomMenuTitle": "Toggle zoom menu",
-  "adjustTab": "Adjust",
+  "adjustTab": "Flip",
   "finetuneTab": "Finetune",
   "filtersTab": "Effects",
   "watermarkTab": "Watermark",

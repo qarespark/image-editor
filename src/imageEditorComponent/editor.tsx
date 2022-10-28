@@ -10,15 +10,14 @@ import './editor.scss';
 import waterMarks from './waterMarks';
 import HiddenUploadInput from './imageEditor/src/components/common/HiddenUploadInput';
 import Compressor from 'compressorjs';
-import { config } from 'process';
-
+import ImageCropper from './imageCropper';
 
 function AiOutlineCloseCircle(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path></svg>;
 }
 
 function RiImageAddFill(props) {
-    return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 24 24" height="1em" width="1em" {...props}><g><path fill="none" d="M0 0h24v24H0z" /><path d="M21 15v3h3v2h-3v3h-2v-3h-3v-2h3v-3h2zm.008-12c.548 0 .992.445.992.993v9.349A5.99 5.99 0 0 0 20 13V5H4l.001 14 9.292-9.293a.999.999 0 0 1 1.32-.084l.093.085 3.546 3.55a6.003 6.003 0 0 0-3.91 7.743L2.992 21A.993.993 0 0 1 2 20.007V3.993A1 1 0 0 1 2.992 3h18.016zM8 7a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" /></g></svg>;
+    return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" version="1" viewBox="0 0 48 48" enableBackground="new 0 0 48 48" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="#8CBCD6" d="M40,41H8c-2.2,0-4-1.8-4-4V11c0-2.2,1.8-4,4-4h32c2.2,0,4,1.8,4,4v26C44,39.2,42.2,41,40,41z"></path><circle fill="#B3DDF5" cx="35" cy="16" r="3"></circle><polygon fill="#9AC9E3" points="20,16 9,32 31,32"></polygon><polygon fill="#B3DDF5" points="31,22 23,32 39,32"></polygon><circle fill="#43A047" cx="38" cy="38" r="10"></circle><g fill="#fff"><rect x="36" y="32" width="4" height="12"></rect><rect x="32" y="36" width="12" height="4"></rect></g></svg>;
 }
 
 function RiImageEditFill(props) {
@@ -30,27 +29,24 @@ function VscSaveAll(props) {
 }
 
 function ImFilePicture(props) {
-    return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 16 16" height="1em" width="1em" {...props}><path d="M13 14h-10v-2l3-5 4.109 5 2.891-2v4z" /><path d="M13 7.5c0 0.828-0.672 1.5-1.5 1.5s-1.5-0.672-1.5-1.5 0.672-1.5 1.5-1.5c0.828 0 1.5 0.672 1.5 1.5z" /><path d="M14.341 3.579c-0.347-0.473-0.831-1.027-1.362-1.558s-1.085-1.015-1.558-1.362c-0.806-0.591-1.197-0.659-1.421-0.659h-7.75c-0.689 0-1.25 0.561-1.25 1.25v13.5c0 0.689 0.561 1.25 1.25 1.25h11.5c0.689 0 1.25-0.561 1.25-1.25v-9.75c0-0.224-0.068-0.615-0.659-1.421zM12.271 2.729c0.48 0.48 0.856 0.912 1.134 1.271h-2.406v-2.405c0.359 0.278 0.792 0.654 1.271 1.134zM14 14.75c0 0.136-0.114 0.25-0.25 0.25h-11.5c-0.135 0-0.25-0.114-0.25-0.25v-13.5c0-0.135 0.115-0.25 0.25-0.25 0 0 7.749-0 7.75 0v3.5c0 0.276 0.224 0.5 0.5 0.5h3.5v9.75z" /></svg>;
+    return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" version="1" viewBox="0 0 48 48" enableBackground="new 0 0 48 48" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="#8CBCD6" d="M31,41H8c-2.2,0-4-1.8-4-4V11c0-2.2,1.8-4,4-4h32c2.2,0,4,1.8,4,4v17C44,35.2,38.2,41,31,41z"></path><circle fill="#B3DDF5" cx="35" cy="16" r="3"></circle><polygon fill="#9AC9E3" points="20,16 9,32 31,32"></polygon><polygon fill="#B3DDF5" points="31,22 23,32 39,32"></polygon><path fill="#E57373" d="M47.7,29.1l-2.8-2.8c-0.4-0.4-1.1-0.4-1.6,0L42,27.6l4.4,4.4l1.3-1.3C48.1,30.3,48.1,29.6,47.7,29.1z"></path><rect x="27.1" y="35.1" transform="matrix(.707 -.707 .707 .707 -16.508 36.511)" fill="#FF9800" width="17.4" height="6.2"></rect><rect x="41.5" y="27.8" transform="matrix(-.707 .707 -.707 -.707 95.395 22.352)" fill="#B0BEC5" width="3.1" height="6.2"></rect><polygon fill="#FFC107" points="27.5,42.2 26,48 31.8,46.5"></polygon><polygon fill="#37474F" points="26.7,45 26,48 29,47.3"></polygon></svg>;
+}
+
+function FcImageFile(props) {
+    return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" version="1" viewBox="0 0 48 48" enableBackground="new 0 0 48 48" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="#8cbcd6" d="M 40 42.6 H 8 c -2.2 0 -4 -1.9 -4 -4.2 V 11.2 c 0 -2.3 1.8 -4.2 4 -4.2 h 32 c 2.2 0 4 1.9 4 4.2 v 27.2 C 44 40.7 42.2 42.6 40 42.6 z"></path><circle fill="#b3ddf5" cx="35" cy="16" r="3"></circle><polygon fill="#9ac9e3" points="20,16 9,32 31,32"></polygon><polygon fill="#b3ddf5" points="31,22 23,32 39,32"></polygon><text x="18.3" y="44.3" textLength="28.2" fontSize="30.2" fill="rgb(255, 255, 255)">
+        📲</text>
+    </svg>;
 }
 
 function GoDesktopDownload(props) {
-    return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 16 16" height="1em" width="1em" {...props}><path fillRule="evenodd" d="M4 6h3V0h2v6h3l-4 4-4-4zm11-4h-4v1h4v8H1V3h4V2H1c-.55 0-1 .45-1 1v9c0 .55.45 1 1 1h5.34c-.25.61-.86 1.39-2.34 2h8c-1.48-.61-2.09-1.39-2.34-2H15c.55 0 1-.45 1-1V3c0-.55-.45-1-1-1z" /></svg>;
+    return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" version="1" viewBox="0 0 48 48" enableBackground="new 0 0 48 48" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="#8cbcd6" d="M 40 41 H 8 c -2.2 0 -4 -1.8 -4 -4 V 11 c 0 -2.2 1.8 -4 4 -4 h 32 c 2.2 0 4 1.8 4 4 v 26 C 44 39.2 42.2 41 40 41 z"></path><circle fill="#b3ddf5" cx="35" cy="16" r="3"></circle><polygon fill="#9ac9e3" points="20,16 9,32 31,32"></polygon><polygon fill="#b3ddf5" points="31,22 23,32 39,32"></polygon><text x="24.8" y="43.8" textLength="28.2" fontSize="23.3" fill="rgb(255, 255, 255)">
+        ⤵️</text>
+    </svg>;
+
 }
 
 function RiExchangeLine(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 24 24" height="1em" width="1em" {...props}><g><path fill="none" d="M0 0h24v24H0z" /><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-5-7h9v2h-4v3l-5-5zm5-4V6l5 5H8V9h4z" /></g></svg>;
-}
-
-function IoMdCloseCircleOutline(props) {
-    return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><g><path fill="none" d="M0 0h24v24H0z"></path><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm0-9.414l2.828-2.829 1.415 1.415L13.414 12l2.829 2.828-1.415 1.415L12 13.414l-2.828 2.829-1.415-1.415L10.586 12 7.757 9.172l1.415-1.415L12 10.586z"></path></g></svg>;
-}
-
-function IoIosArrowBack(props) {
-    return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" {...props}><path d="M217.9 256L345 129c9.4-9.4 9.4-24.6 0-33.9-9.4-9.4-24.6-9.3-34 0L167 239c-9.1 9.1-9.3 23.7-.7 33.1L310.9 417c4.7 4.7 10.9 7 17 7s12.3-2.3 17-7c9.4-9.4 9.4-24.6 0-33.9L217.9 256z" /></svg>;
-}
-
-function MdNavigateNext(props) {
-    return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><polyline fill="none" stroke="#000" strokeWidth="2" points="9 6 15 12 9 18"></polyline></svg>
 }
 
 function RiAddCircleLine(props) {
@@ -59,10 +55,6 @@ function RiAddCircleLine(props) {
 
 function FaCrown(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 640 512" height="1em" width="1em" {...props}><path d="M528 448H112c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h416c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm64-320c-26.5 0-48 21.5-48 48 0 7.1 1.6 13.7 4.4 19.8L476 239.2c-15.4 9.2-35.3 4-44.2-11.6L350.3 85C361 76.2 368 63 368 48c0-26.5-21.5-48-48-48s-48 21.5-48 48c0 15 7 28.2 17.7 37l-81.5 142.6c-8.9 15.6-28.9 20.8-44.2 11.6l-72.3-43.4c2.7-6 4.4-12.7 4.4-19.8 0-26.5-21.5-48-48-48S0 149.5 0 176s21.5 48 48 48c2.6 0 5.2-.4 7.7-.8L128 416h384l72.3-192.8c2.5.4 5.1.8 7.7.8 26.5 0 48-21.5 48-48s-21.5-48-48-48z" /></svg>;
-}
-
-function RiDeleteBin5Line(props) {
-    return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 24 24" height="1em" width="1em" {...props}><g><path fill="none" d="M0 0h24v24H0z" /><path d="M4 8h16v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8zm2 2v10h12V10H6zm3 2h2v6H9v-6zm4 0h2v6h-2v-6zM7 5V3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v2h5v2H2V5h5zm2-1v1h6V4H9z" /></g></svg>;
 }
 
 function BsInfoCircle(props) {
@@ -85,10 +77,6 @@ function BiImages(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 24 24" height="1em" width="1em" {...props}><path d="M20,2H8C6.897,2,6,2.897,6,4v12c0,1.103,0.897,2,2,2h12c1.103,0,2-0.897,2-2V4C22,2.897,21.103,2,20,2z M8,16V4h12 l0.002,12H8z" /><path d="M4,8H2v12c0,1.103,0.897,2,2,2h12v-2H4V8z" /><path d="M12 12L11 11 9 14 19 14 15 8z" /></svg>;
 }
 
-function IoIosImage(props) {
-    return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" {...props}><path d="M112.6 312.3h190.7c4.5 0 7.1-5.1 4.5-8.8l-95.4-153.4c-2.2-3.2-6.9-3.2-9.1 0L108 303.5c-2.6 3.7.1 8.8 4.6 8.8zM306.7 254.3l35 55.7c1 1.5 2.7 2.4 4.5 2.4h53.2c4.5 0 7.1-5.1 4.5-8.8l-61.6-87.7c-2.2-3.2-6.9-3.2-9.1 0L306.6 248c-1.2 1.8-1.2 4.3.1 6.3zM351.1 167.9c13.1-1.3 23.7-11.9 25-25 1.8-17.7-13-32.5-30.7-30.7-13.1 1.3-23.7 11.9-25 25-1.7 17.7 13 32.5 30.7 30.7z" /><path d="M432 48H80c-17.7 0-32 14.3-32 32v352c0 17.7 14.3 32 32 32h352c17.7 0 32-14.3 32-32V80c0-17.7-14.3-32-32-32zm-2.7 280c0 4.4-3.6 8-8 8H90.7c-4.4 0-8-3.6-8-8V90.7c0-4.4 3.6-8 8-8h330.7c4.4 0 8 3.6 8 8V328z" /></svg>;
-}
-
 function RiPictureInPicture2Fill(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 24 24" height="1em" width="1em" {...props}><g><path fill="none" d="M0 0h24v24H0z" /><path fillRule="nonzero" d="M21 3a1 1 0 0 1 1 1v7h-2V5H4v14h6v2H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h18zm0 10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h8zM6.707 6.293l2.25 2.25L11 6.5V12H5.5l2.043-2.043-2.25-2.25 1.414-1.414z" /></g></svg>;
 }
@@ -104,10 +92,12 @@ function BsTextareaT(props) {
 const defaultConfig = {
     tenantId: 0,
     storeId: 0,
-    type: '413X284',
-    height: 200,
-    width: 400,
+    type: 'Large_Banner',
+    height: 284,
+    width: 413,
+    aspectRatio: 413 / 284,
     group: 'both',
+    from: '',
     baseURL: "https://prod.respark.in:8082/pcs-catalog/v1/templates",
     baseDeleteURL: "https://prod.respark.in:8082/pcs-catalog/v1/template"
 }
@@ -135,7 +125,6 @@ function Editor() {
     const [activeTemplate, setActiveTemplate] = useState<any>(getEmptyTemplateObj());
     const [showBgImagesModal, setShowBgImagesModal] = useState(false)
     const [oldBgImage, setOldBgImage] = useState(initialBg);
-    const imageResolutionsMode = defaultConfig.type;
     const [savedTemplatesHeight, setSavedTemplatesListHeight] = useState('50vh');
     // const [bgImages, setBgImages] = useState<any>(bgImagesList); //used for collecting base64 urls of images
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -143,17 +132,17 @@ function Editor() {
     const testStyleModalRef = useRef<any>(null);
     const bgModalRef = useRef<any>(null);
     const editorWrapRef = useRef<any>(null);
+    const cropperRef = useRef<any>(null);
     const [userAcceptedTemplateChangeMessage, setUserAcceptedTemplateChangeMessage] = useState(false)
     const [showTemplateChangeConfirmation, setShowTemplateChangeConfirmation] = useState({ active: false, template: {} });
     const uploadImgsInput = useRef();
     const [activeBgImgCategory, setActiveBgImgCategory] = useState('All');
     const [showAddTextModal, setShowAddTextModal] = useState(false);
     const [editorConfig, setEditorConfig] = useState(defaultConfig);
+    const [cropperConfig, setcropperConfig] = useState('')
     const editedImage = useRef<(imageFileInfo?: object, pixelRatio?: boolean, keepLoadingSpinnerShown?: boolean) => { imageData: object; designState: object; hideLoadingSpinner: (...args: any[]) => any }>();
-
+    const [showCropper, setShowCropper] = useState({ active: false, img: '' });
     useEffect(() => {
-
-
         let config: any = localStorage.getItem('editor__config');
         if (config) {
             config = JSON.parse(config);
@@ -163,7 +152,7 @@ function Editor() {
 
         let params = new URLSearchParams(window.location.search);
         if (window.location.hostname == 'localhost') {
-            params = new URLSearchParams('?env=qa&t_id=0&s_id=0&type=413X284');
+            params = new URLSearchParams('?env=qa&t_id=0&s_id=0&type=Large_Banner');
         }
         if (params) {
             console.log(params)
@@ -328,23 +317,28 @@ function Editor() {
         setAnchorEl(null);
     };
 
-    const toggleEditor = () => {
-        setShowEditor(showEditor ? false : true);
-    };
-
     const uploadNewBgFromLocal = () => {
         let element: any = uploadImgsInput.current;
         element?.click();
     }
 
-    const onSelectImage = (e: any) => {
+    const onUploadLocalBGImage = (e: any) => {
         if (e.target.files && e.target.files.length) {
             var reader = new FileReader();
             reader.readAsDataURL(e.target.files[0]); // read file as data url
             reader.onload = (event: any) => { // called once readAsDataURL is completed
-                onChangeBg(event.target!.result);
+                setShowCropper({ active: true, img: event.target!.result })
+                // onChangeBg(event.target!.result);
             }
         }
+    }
+
+    const onCropSubmit = () => {
+        const croppedImage = cropperRef.current.getCroppedImage();
+        croppedImage.then((imgUrl) => {
+            onChangeBg(imgUrl);
+            setShowCropper({ active: false, img: "" });
+        })
     }
 
     const onSelectBgImage = (url: any) => {
@@ -511,8 +505,33 @@ function Editor() {
 
     const getEditorInstanceInConsole = () => {
         getEditorInstance().then((editorInstance: any) => {
-            console.log(editorInstance.designState.annotations)
+            console.log(editorInstance)
         })
+    }
+
+    const onSubmitImage = () => {
+        getEditorInstance().then((editorInstance: any) => {
+            if (editorInstance.designState) {
+                const { imageData } = editorInstance;
+                imageData.imageCanvas.toBlob(function (blob) {
+                    const formData = new FormData();
+                    // The third parameter is required for server
+                    formData.append('file', blob, `${Math.random()}_banner.png`);
+                    formData.append("id", '0');
+                    formData.append("type", 'promotions');
+                    // Send the compressed image file to server with XMLHttpRequest.
+                    axios.post('https://qa.respark.in:8082/pcs-catalog/v1/s3/uploadwithtype', formData).then((res: any) => {
+                        // console.log('image uploaded', res)
+                        setShowSaveActionModal(false);
+                    });
+                })
+            }
+        })
+    }
+
+    const onClose = () => {
+        setShowEditor(showEditor ? false : true);
+        localStorage.removeItem('editor__config')
     }
 
     return (
@@ -569,16 +588,16 @@ function Editor() {
                                 </div>
                                 <div className="heading">Tabs Details</div>
                                 <div className="info-details-wrap">
-                                    <div className="sub-heading">1) Adjust</div>
+                                    <div className="sub-heading">1) Flip</div>
                                     <div className="details">
                                         <div className="image-wrap d-f-c-c">
                                             <BiImages />Adjust
                                         </div>
                                         <div className="features">
-                                            a) Croping (Default - original)<br />
-                                            b) Rotate<br />
-                                            c) Flip X (Flip Horizontal)<br />
-                                            d) Flip Y (Flip Vertical)<br />
+                                            {/* a) Croping (Default - original)<br /> */}
+                                            a) Rotate<br />
+                                            b) Flip X (Flip Horizontal)<br />
+                                            c) Flip Y (Flip Vertical)<br />
                                         </div>
                                     </div>
                                 </div>
@@ -720,6 +739,10 @@ function Editor() {
                                                 <div className="icon"><ImFilePicture /></div>
                                                 <div className="text">Update selected template</div>
                                             </MenuItem>}
+                                            <MenuItem id="download" className='menu-item' onClick={() => onSubmitImage()}>
+                                                <div className="icon"><FcImageFile /></div>
+                                                <div className="text">Submit Banner Image</div>
+                                            </MenuItem>
                                             <MenuItem id="download" className='menu-item' onClick={() => handleSaveClick('download')}>
                                                 <div className="icon"><GoDesktopDownload /></div>
                                                 <div className="text">Download</div>
@@ -738,7 +761,7 @@ function Editor() {
                                         onBeforeSave={() => false}
                                         savingPixelRatio={1.2}
                                         previewPixelRatio={window.devicePixelRatio}
-                                        onClose={toggleEditor}
+                                        onClose={onClose}
                                         getCurrentImgDataFnRef={editedImage}
                                         annotationsCommon={{
                                             fill: 'black',
@@ -772,6 +795,7 @@ function Editor() {
                                             align: 'left',
                                             fontStyle: 'normal',
                                         }}
+                                        Crop={{ noPresets: true }}
                                         Watermark={{ gallery: [...waterMarks] }}
                                         tabsIds={[TABS.ANNOTATE, TABS.FILTERS, TABS.FINETUNE, TABS.WATERMARK, TABS.ADJUST]} //in case of new image add TABS.RESIZE
                                         defaultTabId={TABS.ANNOTATE}
@@ -784,11 +808,13 @@ function Editor() {
                             </div>
                         </div>
                     </div>
-                    <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={uploadMultipleFilesToS3} multiple />
-                    <button className="upload-multi-image" onClick={() => document.getElementById('background-img').click()}>Upload multi images</button>
+
+                    {/* <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={uploadMultipleFilesToS3} multiple />
+                    <button className="upload-multi-image" onClick={() => document.getElementById('background-img').click()}>Upload multi images</button> */}
+
                     <HiddenUploadInput
                         ref={uploadImgsInput}
-                        onChange={onSelectImage}
+                        onChange={onUploadLocalBGImage}
                         multiple
                     />
                     <Backdrop
@@ -816,7 +842,7 @@ function Editor() {
                                                     <div className="bg-images-list-wrap">
                                                         {BACKGROUND[editorConfig.type][imageCategory]?.map((image) => {
                                                             return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => onSelectBgImage(image)}>
-                                                                <img src={image} id={image} style={{ height: `${editorConfig.height / 2}px` }} />
+                                                                <img src={image} id={image} />
                                                             </div>
                                                         })}
                                                     </div>
@@ -840,6 +866,28 @@ function Editor() {
                                 <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Upload from your computer <RiImageAddFill /></div>
                                 {/* <div className='btn' onClick={() => onChangeBg(null)}>Cancel <IoMdCloseCircleOutline /></div> */}
                                 <div className='btn' onClick={() => onChangeBg(bgImage)}>Apply <RiExchangeLine /></div>
+                            </div>
+                        </div>
+                    </Backdrop>
+                    <Backdrop
+                        className="backdrop-modal-wrapper cropper-modal"
+                        open={showCropper.active ? true : false}
+                    >
+                        <div className="backdrop-modal-content d-f-c "
+                            style={{
+                                height: `auto`,
+                                width: `${editorConfig.width + 500}px`
+                            }}>
+                            <div className="modal-close" onClick={() => setShowCropper({ active: false, img: "" })}><AiOutlineCloseCircle /></div>
+                            <div className="heading">Crop Selected Image</div>
+                            <div className="modal-containt">
+                                <ImageCropper
+                                    ref={cropperRef}
+                                    editorConfig={editorConfig}
+                                    IMG={showCropper.img} />
+                                <div className="btn-wrap">
+                                    <div className="btn" onClick={onCropSubmit}>Crop Image</div>
+                                </div>
                             </div>
                         </div>
                     </Backdrop>

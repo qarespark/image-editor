@@ -51,7 +51,7 @@ export default {
     }
 
     ,
-    "413X284": {
+    "Large_Banner": {
         "Salon": [
             "https://image-editor-ten.vercel.app/Backgrounds/413X284/Salon/Frame%20164.png",
             "https://image-editor-ten.vercel.app/Backgrounds/413X284/Salon/Frame%20165.png",

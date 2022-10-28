@@ -26,7 +26,7 @@ const ADDED_IMG_SPACING_PERCENT = 0.15;
 
 const ImageOptions = () => {
   const [isLoading, setIsLoading] = useState();
-  const [showImagesModal, setShowImagesModal] = useState(false)
+  const [showImagesModal, setShowImagesModal] = useState(true)
   const uploadImgsInput = useRef();
   const [selectedImage, setSelectedImage] = useState('')
   const modalRef = useRef(null);
@@ -136,9 +136,28 @@ const ImageOptions = () => {
   };
 
   const onSelectImage = (image) => {
-    const img = new Image();
-    img.src = image;
-    addImgScaled(img);
+    if (image) {
+      const img = new Image();
+      if (image.includes('base64')) {
+        const toDataURL = url => fetch(url)
+          .then(response => response.blob())
+          .then(blob => new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.onloadend = () => resolve(reader.result)
+            reader.onerror = reject
+            reader.readAsDataURL(blob)
+          }))
+        toDataURL(image)
+          .then(dataUrl => {
+            img.src = dataUrl;
+            addImgScaled(img);
+          })
+      } else {
+        img.src = image;
+        addImgScaled(img);
+      }
+
+    }
     setShowImagesModal(false);
   }
   const onOutsideClick = (event) => {
@@ -218,9 +237,8 @@ const ImageOptions = () => {
             </div>
 
             <div className='btn-wrap'>
-              <div className='btn' onClick={() => onSelectImage(null)}>Cancel <IoMdCloseCircleOutline /></div>
               <div className="btn" onClick={triggerUploadInput}>Upload from your computer <RiImageAddFill /></div>
-              {/* <div className='btn' onClick={() => onSelectImage(selectedImage)}>Add graphics <RiExchangeLine /></div> */}
+              <div className='btn' onClick={() => onSelectImage(null)}>Cancel <IoMdCloseCircleOutline /></div>
             </div>
           </div>
         </div>

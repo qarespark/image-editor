@@ -19,6 +19,7 @@
     "node-sass": "^7.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-easy-crop": "^4.6.1",
     "react-reconciler": "~0.28.0",
     "react-scripts": "5.0.1",
     "scheduler": "^0.22.0",

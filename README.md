@@ -3,11 +3,11 @@
 <!-- change default color     latestColor: 'black', -->
 <!-- src/imageEditorComponent/imageEditor/src/components/MainCanvas/index.jsx -->
 
-  <!-- http://localhost:3000/?env=qa&t_id=1&s_id=1&type=413X284
+  <!-- http://localhost:3000/?env=qa&t_id=1&s_id=1&type=Large_Banner
 {
     "tenantId": "1",
     "storeId": "1",
-    "type": "413X284",
+    "type": "Large_Banner",Small_Banner,Square_banner
     "height": "200",
     "width": "400",
     "group": "both",
@@ -19,7 +19,7 @@
 {
     "tenantId": 0,
     "storeId": 0,
-    "type": "413X284",
+    "type": "Large_Banner",Small_Banner,Square_banner
     "height": "200",
     "width": "400",
     "group": "both",

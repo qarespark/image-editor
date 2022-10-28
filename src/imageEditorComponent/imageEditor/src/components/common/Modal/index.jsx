@@ -23,8 +23,8 @@ const Modal = ({
   cancelLabel,
   isOpened,
   doneButtonStyle,
-  doneButtonColor = 'link',
-  cancelButtonColor = 'link',
+  doneButtonColor = 'primary',
+  cancelButtonColor = 'secondary',
   children,
   areButtonsDisabled,
   zIndex,
@@ -55,19 +55,47 @@ const Modal = ({
       {children && <ModalContent>{children}</ModalContent>}
       <ModalActions align="center">
         <Button
+          className='secondary-btn'
           color={cancelButtonColor}
           onClick={onCancel}
           size="md"
           disabled={areButtonsDisabled}
+          style={{
+            color: "var(--primary-text-color)",
+            backgroundColor: "var(--primary-bg-color)",
+            borderRadius: '4px',
+            fontSize: '12px',
+            marginTop: "20px",
+            padding: "10px 15px",
+            width: "48%",
+            textAlign: "center",
+            fontFamily: "poppins",
+            justifyContent: "center",
+            display: 'flex'
+          }}
         >
           {cancelLabel}
         </Button>
         <Button
+          className='primary-btn d-f-c'
           color={doneButtonColor}
           onClick={onDone}
           size="md"
-          style={doneButtonStyle}
+          // style={doneButtonStyle}
           disabled={areButtonsDisabled}
+          style={{
+            color: "white",
+            backgroundColor: "var(--primary-color)",
+            borderRadius: '4px',
+            fontSize: '12px',
+            marginTop: "20px",
+            padding: "10px 15px",
+            width: "48%",
+            textAlign: "center",
+            fontFamily: "poppins",
+            justifyContent: "center",
+            display: 'flex',
+          }}
         >
           {doneLabel}
         </Button>
