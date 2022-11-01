@@ -18,6 +18,8 @@ import { LineButton, LineOptions } from './Line';
 import { ArrowButton, ArrowOptions } from './Arrow';
 import { PolygonButton, PolygonOptions } from './Polygon';
 import { Resize } from './Resize';
+import { Template } from './Template';
+import { Background } from './Background';
 import { Watermark } from './Watermark';
 
 export const TOOLS_ITEMS = {
@@ -117,6 +119,14 @@ export const TOOLS_ITEMS = {
     id: TOOLS_IDS.RESIZE,
     Item: Resize,
   },
+  [TOOLS_IDS.TEMPLATE]: {
+    id: TOOLS_IDS.TEMPLATE,
+    Item: Template,
+  },
+  [TOOLS_IDS.BACKGROUND]: {
+    id: TOOLS_IDS.BACKGROUND,
+    Item: Background,
+  },
 };
 
 export const TABS_TOOLS = {
@@ -146,4 +156,6 @@ export const TABS_TOOLS = {
     TOOLS_IDS.ARROW,
   ],
   [TABS_IDS.RESIZE]: [TOOLS_IDS.RESIZE],
+  [TABS_IDS.TEMPLATE]: [TOOLS_IDS.TEMPLATE],
+  [TABS_IDS.BACKGROUND]: [TOOLS_IDS.BACKGROUND],
 };

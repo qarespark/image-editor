@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState, memo } from 'react';
 import Backdrop from '@mui/material/Backdrop';
 import ImageEditor, { TOOLS, TABS } from "./imageEditor/src"
 import { Menu, MenuItem } from '@mui/material';
@@ -11,6 +11,9 @@ import waterMarks from './waterMarks';
 import HiddenUploadInput from './imageEditor/src/components/common/HiddenUploadInput';
 import Compressor from 'compressorjs';
 import ImageCropper from './imageCropper';
+import Spinner from './imageEditor/src/components/common/Spinner';
+import EditorGuide from './editorGuide';
+import { EditorContext } from '.';
 
 function AiOutlineCloseCircle(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path></svg>;
@@ -93,41 +96,27 @@ function RiImageAddFill2(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 24 24" height="1em" width="1em" {...props}><g><path fill="none" d="M0 0h24v24H0z" /><path d="M21 15v3h3v2h-3v3h-2v-3h-3v-2h3v-3h2zm.008-12c.548 0 .992.445.992.993v9.349A5.99 5.99 0 0 0 20 13V5H4l.001 14 9.292-9.293a.999.999 0 0 1 1.32-.084l.093.085 3.546 3.55a6.003 6.003 0 0 0-3.91 7.743L2.992 21A.993.993 0 0 1 2 20.007V3.993A1 1 0 0 1 2.992 3h18.016zM8 7a2 2 0 1 1 0 4 2 2 0 0 1 0-4z" /></g></svg>;
 }
 
-const defaultConfig = {
-    tenantId: 3,
-    storeId: 6,
-    type: 'Square_Banner',
-    height: 148,
-    width: 413,
-    aspectRatio: 413 / 148,
-    group: 'both',
+const defaultConfig: any = {
+    tenantId: '',
+    storeId: '',
+    type: '',
+    height: '',
+    width: '',
+    aspectRatio: '',
+    group: '',
     from: '',
-    baseURL: "https://prod.respark.in:8082/pcs-catalog/v1/templates",
-    baseDeleteURL: "https://prod.respark.in:8082/pcs-catalog/v1/template"
+    baseURL: '',
 }
 
-const getEmptyTemplateObj = () => {
-    return {
-        "designState": {},
-        "image": "",
-        "index": 1,
-        "active": true,
-        "group": "both",
-        "category": "",
-        "storeId": defaultConfig.storeId,
-        "tenantId": defaultConfig.tenantId,
-        "type": defaultConfig.type
-    }
-}
-
-function Editor() {
+function Editor({ props }: any = {}) {
     const [showEditor, setShowEditor] = useState(true);
     const [bgImage, setBgImage] = useState<any>(initialBg);
     const [showSaveActionModal, setShowSaveActionModal] = useState(false);
     const [resparkTemplates, setResparkTemplates] = useState<any[]>([]);
     const [templatesList, setTemplatesList] = useState<any[]>([]);
-    const [activeTemplate, setActiveTemplate] = useState<any>(getEmptyTemplateObj());
-    const [showBgImagesModal, setShowBgImagesModal] = useState(false)
+    const [activeTemplate, setActiveTemplate] = useState<any>(null);
+    const [showBgImages, setShowBgImages] = useState(false)
+    const [showTemplates, setshowTemplates] = useState(true)
     const [oldBgImage, setOldBgImage] = useState(initialBg);
     const [savedTemplatesHeight, setSavedTemplatesListHeight] = useState('50vh');
     // const [bgImages, setBgImages] = useState<any>(bgImagesList); //used for collecting base64 urls of images
@@ -142,55 +131,100 @@ function Editor() {
     const uploadImgsInput = useRef();
     const [activeBgImgCategory, setActiveBgImgCategory] = useState('All');
     const [showAddTextModal, setShowAddTextModal] = useState(false);
-    const [editorConfig, setEditorConfig] = useState(defaultConfig);
-    const [cropperConfig, setcropperConfig] = useState('')
+    const [editorConfig, setEditorConfig] = useState<any>(defaultConfig);
     const editedImage = useRef<(imageFileInfo?: object, pixelRatio?: boolean, keepLoadingSpinnerShown?: boolean) => { imageData: object; designState: object; hideLoadingSpinner: (...args: any[]) => any }>();
     const [showCropper, setShowCropper] = useState({ active: false, img: '' });
+    const [parentConfigMesg, setParentConfigMesg] = useState(defaultConfig);
+    const { currentTab, currentId, setCurrentId } = useContext(EditorContext);
+
+    // const { dispatch, tabId }: any = useStore();
     useEffect(() => {
-        let config: any = localStorage.getItem('editor__config');
-        if (config) {
-            config = JSON.parse(config);
+        setshowTemplates(false);
+        setShowBgImages(false);
+        setShowAddTextModal(false);
+        if (currentTab == TABS.BACKGROUND) {
+            setShowBgImages(true);
+        } else if (currentTab == TABS.TEMPLATE) {
+            setShowBgImages(false);
+            setshowTemplates(true);
+        }
+    }, [currentTab])
+
+    useEffect(() => {
+        if (currentId == TOOLS.TEXT) {
+            setShowAddTextModal(true);
+        }
+    }, [currentId])
+
+
+    useEffect(() => {
+        if (window.location.ancestorOrigins.length) {//this means editor opens in iframe
+            window.parent.postMessage({ type: 'Editor Mounted', data: 'true' }, window.location.ancestorOrigins[0]);
+            // console.log("message sent")
+            window.addEventListener('message', function (e) {
+                if (e.data.type == 'Editor Config') {
+                    // console.log("message for child", e)
+                    setParentConfigMesg(e.data.data);
+                }
+            });
         } else {
-            config = defaultConfig;
+            const config = sessionStorage.getItem('editor__config');
+            if (config) {
+                setParentConfigMesg(JSON.parse(config));
+            } else setParentConfigMesg({
+                tenantId: 0,
+                storeId: 0,
+                type: 'small_banner',
+                height: 284,
+                width: 413,
+                aspectRatio: 1.454,
+                group: 'both',
+                from: 'Slider',
+                title: "Update slider banner!",
+                baseURL: "https://qa.respark.in:8082/pcs-catalog/v1/template"
+            });
         }
-
-        let params = new URLSearchParams(window.location.search);
-        // if (window.location.hostname == 'localhost') {
-        //     params = new URLSearchParams('?env=qa&t_id=0&s_id=0&type=Large_Banner');
-        // }
-        if (params) {
-            console.log(params)
-            if (params.get('env') == 'qa') {
-                config.baseURL = "https://qa.respark.in:8082/pcs-catalog/v1/templates";
-                config.baseDeleteURL = "https://qa.respark.in:8082/pcs-catalog/v1/template";
-            } else {
-                config.baseURL = "https://prod.respark.in:8082/pcs-catalog/v1/templates";
-                config.baseDeleteURL = "https://prod.respark.in:8082/pcs-catalog/v1/template";
-            }
-            if (params.get('t_id')) {
-                config.tenantId = params.get('t_id');
-            }
-            if (params.get('s_id')) {
-                config.storeId = params.get('s_id');
-            }
-            if (params.get('type')) {
-                config.type = params.get('type');
-            }
-        }
-        console.log(config)
-        setEditorConfig(config)
-        getTemplatesData(config)
-
-        axios.get(`${config.baseURL}/0/0/${config.type}`).then((templates: any) => {
-            setResparkTemplates(templates.data.reverse())
-        });
     }, [])
+
+    useEffect(() => {
+        if (parentConfigMesg && parentConfigMesg.type) {
+            const config = parentConfigMesg;
+            if (window.location.search) {
+                let params = new URLSearchParams(window.location.search);
+                if (params.get('env') == 'prod') {
+                    config.baseURL = "https://prod.respark.in:8082/pcs-catalog/v1/template";
+                } else {
+                    config.baseURL = "https://qa.respark.in:8082/pcs-catalog/v1/template";
+                }
+                if (params.get('t_id')) {
+                    config.tenantId = params.get('t_id');
+                }
+                if (params.get('s_id')) {
+                    config.storeId = params.get('s_id');
+                }
+                if (params.get('type')) {
+                    config.type = params.get('type');
+                }
+            }
+            console.log(config);
+            setTimeout(() => {
+                setEditorConfig(config)
+            }, 1000);
+            setActiveTemplate({ ...getEmptyTemplateObj() });
+            getTemplatesData(config)
+            axios.get(`${config.baseURL}s/0/0/${config.type}`).then((templates: any) => {
+                setResparkTemplates(templates.data.reverse())
+            }).catch((e) => { });
+        }
+    }, [parentConfigMesg])
 
     const getTemplatesData = (config: any) => {
         if (config.tenantId != 0) {
-            axios.get(`${config.baseURL}/${config.tenantId}/${config.storeId}/${config.type}`).then((response: any) => {
-                setTemplatesList(response.data.reverse() || []);
-            });
+            axios.get(`${config.baseURL}s/${config.tenantId}/${config.storeId}/${config.type}`)
+                .then((response: any) => {
+                    setTemplatesList(response.data.reverse() || []);
+                })
+                .catch((e) => { });
         }
     }
 
@@ -205,6 +239,19 @@ function Editor() {
         }
     }, [activeTemplate])
 
+    const getEmptyTemplateObj = () => {
+        return {
+            "designState": {},
+            "image": "",
+            "index": 1,
+            "active": true,
+            "group": "both",
+            "category": "",
+            "storeId": editorConfig.storeId,
+            "tenantId": editorConfig.tenantId,
+            "type": editorConfig.type
+        }
+    }
     const closeSaveModal = () => {
         setAnchorEl(null);
         setShowSaveActionModal(false);
@@ -231,7 +278,7 @@ function Editor() {
     const onChangeBg = (bgImage: any) => {
         if (bgImage) setBgImage(bgImage)
         else setBgImage(oldBgImage);
-        setShowBgImagesModal(false)
+        // setShowBgImages(false)
     }
 
     const handleSaveClick = (event: any) => {
@@ -257,8 +304,8 @@ function Editor() {
                 const template: any = { ...getEmptyTemplateObj() };
                 template.designState = { ...designState };
                 template.image = imageData.imageBase64;
-                axios.post(editorConfig.baseURL, template).then((response: any) => {
-                    setActiveTemplate({ ...activeTemplate, id: response.data.id })
+                axios.post(`${editorConfig.baseURL}s`, template).then((response: any) => {
+                    setActiveTemplate({ ...response.data })
                     if (editorConfig.tenantId == 0) {
                         const resparkTemplatesCopy: any = JSON.parse(JSON.stringify(resparkTemplates));
                         resparkTemplatesCopy.unshift(response.data);
@@ -281,7 +328,7 @@ function Editor() {
                 const template = { ...activeTemplate }
                 template.designState = { ...designState };
                 template.image = imageData.imageBase64;
-                axios.post(editorConfig.baseURL, template).then((response: any) => {
+                axios.post(`${editorConfig.baseURL}s`, template).then((response: any) => {
                     setActiveTemplate(response.data);
                     if (editorConfig.tenantId == 0) {
                         let tIndex = resparkTemplates.findIndex((t: any) => t.id == activeTemplate.id);
@@ -298,6 +345,21 @@ function Editor() {
 
             }
         })
+    }
+
+    const deleteCustomerTemplate = (event: any, template: any, templateIndex: number) => {
+        axios.delete(`${editorConfig.baseURL}/${template.id}`).then((response: any) => {
+            if (editorConfig.tenantId == 0) {
+                const resparkTemplatesCopy: any = JSON.parse(JSON.stringify(resparkTemplates));
+                resparkTemplatesCopy.splice(templateIndex, 1);
+                setResparkTemplates(resparkTemplatesCopy);
+            } else {
+                const templatesListCopy: any = JSON.parse(JSON.stringify(templatesList));
+                templatesListCopy.splice(templateIndex, 1);
+                setTemplatesList(templatesListCopy);
+            }
+        });
+        event.stopPropagation();
     }
 
     const downloadTemplate = () => {
@@ -317,7 +379,7 @@ function Editor() {
     const onBgChangeActionSelect = (from: any) => {
         setOldBgImage(bgImage)
         if (from == 'self') uploadNewBgFromLocal();
-        else if (from == 'gallery') setShowBgImagesModal(true);
+        else if (from == 'gallery') setShowBgImages(true);
         setAnchorEl(null);
     };
 
@@ -372,6 +434,7 @@ function Editor() {
         if (event.target.classList.contains('text-type-modal')) {
             if (testStyleModalRef.current && !testStyleModalRef.current.contains(event.target)) {
                 setShowAddTextModal(false);
+                setCurrentId('')
             }
         } else {
             if (bgImageModalRef.current && !bgImageModalRef.current.contains(event.target)) {
@@ -386,21 +449,6 @@ function Editor() {
         } else {
             bgModalRef.current.scrollLeft += 400
         }
-    }
-
-    const deleteCustomerTemplate = (event: any, template: any, templateIndex: number) => {
-        axios.delete(`${editorConfig.baseDeleteURL}/${template.id}`).then((response: any) => {
-            if (editorConfig.tenantId == 0) {
-                const resparkTemplatesCopy: any = JSON.parse(JSON.stringify(resparkTemplates));
-                resparkTemplatesCopy.splice(templateIndex, 1);
-                setResparkTemplates(resparkTemplatesCopy);
-            } else {
-                const templatesListCopy: any = JSON.parse(JSON.stringify(templatesList));
-                templatesListCopy.splice(templateIndex, 1);
-                setTemplatesList(templatesListCopy);
-            }
-        });
-        event.stopPropagation();
     }
 
     const multiFileToBase64 = (e: any) => {
@@ -502,6 +550,7 @@ function Editor() {
                 template.image = imageData.imageBase64;
                 setActiveTemplate(template);
                 setShowEditor(false);
+                setCurrentId('');
                 setTimeout(() => setShowEditor(true), 1)
                 setShowAddTextModal(false)
             }
@@ -518,465 +567,363 @@ function Editor() {
         getEditorInstance().then((editorInstance: any) => {
             if (editorInstance.designState) {
                 const { imageData } = editorInstance;
-                imageData.imageCanvas.toBlob(function (blob) {
-                    const formData = new FormData();
-                    // The third parameter is required for server
-                    formData.append('file', blob, `${Math.random()}_banner.png`);
-                    formData.append("id", '0');
-                    formData.append("type", 'promotions');
-                    // Send the compressed image file to server with XMLHttpRequest.
-                    axios.post('https://qa.respark.in:8082/pcs-catalog/v1/s3/uploadwithtype', formData).then((res: any) => {
-                        // console.log('image uploaded', res)
-                        setShowSaveActionModal(false);
-                    });
-                })
+                if (editorConfig.outputImageType == 'base64') {
+                    window.parent.postMessage({ type: 'Editor Closed', data: imageData.imageBase64 }, window.location.ancestorOrigins[0]);
+                } else {
+                    imageData.imageCanvas.toBlob(function (blob) {
+                        const formData = new FormData();
+                        formData.append('file', blob, `${Math.random()}_banner.png`);
+                        formData.append("id", '0');
+                        formData.append("type", 'promotions');
+                        axios.post('https://qa.respark.in:8082/pcs-catalog/v1/s3/uploadwithtype', formData).then((res: any) => {
+                            if (window.location.ancestorOrigins.length) {
+                                window.parent.postMessage({ type: 'Editor Closed', data: res.data }, window.location.ancestorOrigins[0]);
+                            }
+                            setShowSaveActionModal(false);
+                            console.log(res.data)
+                        });
+                    })
+                }
             }
         })
     }
 
     const onClose = () => {
         setShowEditor(showEditor ? false : true);
-        localStorage.removeItem('editor__config')
+        window.parent.postMessage({ type: 'Editor Closed', data: '' }, window.location.ancestorOrigins[0]);
+        sessionStorage.removeItem('editor__config');
     }
 
-    return (
-        <>
-            <div className={`editor-component-wrap  ${showBgImagesModal ? "modal-opened" : ""}`}>
-                <div className="editor-container ">
-                    <div className="page-heading">Respark Image Editor
-                        <div className="get-instance" onClick={getEditorInstanceInConsole}>Get editor instance</div>
-                        <div className="tenant-store-input">
-                            <div className='input-wraps'>
-                                <label className='' >Tenant</label>
-                                <input type="number" value={editorConfig.tenantId} onChange={(e: any) => setEditorConfig({ ...editorConfig, tenantId: e.target.value })} />
-                            </div>
-                            <div className='input-wraps'>
-                                <label className='' >Store</label>
-                                <input type="number" value={editorConfig.storeId} onChange={(e: any) => setEditorConfig({ ...editorConfig, storeId: e.target.value })} />
-                            </div>
-                            <div className='input-wraps btn' onClick={() => getTemplatesData(editorConfig)}>Update</div>
-                        </div>
+    const RenderTemplatesList = () => {
+        return <div className='templates-list-wrap' style={{ height: savedTemplatesHeight }}>
+            <div className='images-list-wrap' >
+                <div className="heading">Recommended
+                    <div className="icon-wrap"><BsInfoCircle />
+                        <div className="info">Templates created by Respark for you!</div>
+                    </div>
+                </div>
+                <div className="templates-list">
+                    {resparkTemplates.map((template: any) => {
+                        return <React.Fragment key={Math.random()}>
+                            {template.tenantId == 0 && <div className="template-details" onClick={() => onSelectTemplate(template)}>
+                                <div className="icon-wrap"><FaCrown /></div>
+                                <img src={template?.image} />
+                            </div>}
+                        </React.Fragment>
+                    })}
+                </div>
+                {templatesList.length != 0 && <>
+                    <div className="heading">Your creations
                         <div className="icon-wrap"><BsInfoCircle />
-                            <div className="info">
-                                <div className="heading">How to make a banner</div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">1) Choose template</div>
-                                    <div className="details">
-                                        Explore Respark's wide range of banner templates for various needs in different styles and themes.
-                                        Choose any template you like and click on the template and start designing and making changes.
-                                    </div>
-                                </div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">2) Customize your banner in a minutes</div>
-                                    <div className="details">
-                                        Found the right template but want to make a few adjustments? Simple. With a few clicks, you can edit the text, change fonts and try out different color combinations for the perfect banner design. Also you can change background too.
-                                    </div>
-                                </div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">3) Get creative with design ingredients</div>
-                                    <div className="details">
-                                        You will find all the design elements you need to create the perfect banner. Explore images, illustrations, icons, logos, fonts, shapes, lines, pen tool and more.
-                                        Get creative!
-                                    </div>
-                                </div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">4) Add identity (Watermark)</div>
-                                    <div className="details">
-                                        Also you can add watermark to your newly created banner.
-                                    </div>
-                                </div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">5) Final step</div>
-                                    <div className="details">
-                                        When your design is ready then you can save it as a template for your further editing and customisation or you can update previously saved template.
-                                    </div>
-                                </div>
-                                <div className="heading">Tabs Details</div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">1) Flip</div>
-                                    <div className="details">
-                                        <div className="image-wrap d-f-c-c">
-                                            <BiImages />Adjust
-                                        </div>
-                                        <div className="features">
-                                            {/* a) Croping (Default - original)<br /> */}
-                                            a) Rotate<br />
-                                            b) Flip X (Flip Horizontal)<br />
-                                            c) Flip Y (Flip Vertical)<br />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">2) Draw</div>
-                                    <div className="details">
-                                        <div className="image-wrap d-f-c-c">
-                                            <RiImageEditLine />Draw
-                                        </div>
-                                        <div className="features">
-                                            a) Text editing - Font, color, alignment, size, spacing<br />
-                                            b) Image - Graphic images, icons <br />
-                                            c) Shapes - Rectangle, square, ellips, polygoan, , line, arrow<br />
-                                            d) Drawing<br />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">3) Filters</div>
-                                    <div className="details">
-                                        <div className="image-wrap d-f-c-c">
-                                            <IoIosImages />Filters
-                                        </div>
-                                        <div className="features">
-                                            a) Images filters - Invert, black&white, sepia, solarize, and many more...
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">4) Finetune</div>
-                                    <div className="details">
-                                        <div className="image-wrap d-f-c-c">
-                                            <BsFillImageFill />Finetune
-                                        </div>
-                                        <div className="features">
-                                            a) Brightness<br />
-                                            b) Contrast<br />
-                                            c) HSV<br />
-                                            d) Blur<br />
-                                            d) Warmth<br />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">5) Watermark</div>
-                                    <div className="details">
-                                        <div className="image-wrap d-f-c-c">
-                                            <MdBrandingWatermark />Watermark
-                                        </div>
-                                        <div className="features">
-                                            a) Watermark logo
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="info-details-wrap">
-                                    <div className="sub-heading">6) Resize</div>
-                                    <div className="details">
-                                        <div className="image-wrap d-f-c-c">
-                                            <RiPictureInPicture2Fill />Resize
-                                        </div>
-                                        <div className="features">
-                                            a) Change image width and height in specific ratio
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <div className="info">Previously created templates by you!</div>
                         </div>
                     </div>
-                    <div className='editor-wrapper'>
-                        <div className='images-list-wrap' style={{ height: savedTemplatesHeight }}>
-                            <div className="heading">Recommended
-                                <div className="icon-wrap"><BsInfoCircle />
-                                    <div className="info">Templates created by Respark for you!</div>
-                                </div>
-                            </div>
-                            <div className="templates-list">
-                                {resparkTemplates.map((template: any) => {
-                                    return <React.Fragment key={Math.random()}>
-                                        {template.tenantId == 0 && <div className="template-details" onClick={() => onSelectTemplate(template)}>
-                                            <div className="icon-wrap"><FaCrown /></div>
-                                            <img src={template?.image} />
-                                        </div>}
-                                    </React.Fragment>
-                                })}
-                            </div>
-                            {templatesList.length != 0 && <>
-                                <div className="heading">Your creations
-                                    <div className="icon-wrap"><BsInfoCircle />
-                                        <div className="info">Previously created templates by you!</div>
+                    <div className="templates-list">
+                        {templatesList.map((template: any, i: number) => {
+                            return <React.Fragment key={Math.random()}>
+                                <div className="template-details users-template" onClick={() => onSelectTemplate(template)}>
+                                    <div className="info-icon-wrap" onClick={(e) => deleteCustomerTemplate(e, template, i)}>
+                                        <div className="info">Delete template</div>
+                                        <div className="icon-wrap" ><AiOutlineCloseCircle /></div>
                                     </div>
+                                    <img src={template?.image} />
                                 </div>
-                                <div className="templates-list">
-                                    {templatesList.map((template: any, i: number) => {
-                                        return <React.Fragment key={Math.random()}>
-                                            <div className="template-details users-template" onClick={() => onSelectTemplate(template)}>
-                                                <div className="info-icon-wrap" onClick={(e) => deleteCustomerTemplate(e, template, i)}>
-                                                    <div className="info">Delete template</div>
-                                                    <div className="icon-wrap" ><AiOutlineCloseCircle /></div>
-                                                </div>
-                                                <img src={template?.image} />
+                            </React.Fragment>
+                        })}
+                    </div>
+                </>}
+                <div className='btn-wrap' onClick={() => onSelectTemplate(null)}>
+                    <div className="btn">Create template
+                        <RiAddCircleLine />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    const renderBackgroundsList = () => {
+        return <div className="backdrop-modal-content d-f-c backround-mges-wrap templates-list-wrap" ref={bgImageModalRef}>
+            <div className="modal-containt">
+                <div className="category-image-wrap">
+                    <div className="cat-list-wrap">
+                        <div className={`category ${activeBgImgCategory == 'All' ? "active" : ""}`} onClick={() => setActiveBgImgCategory('All')}>All</div>
+                        {editorConfig.type && BACKGROUND[editorConfig.type] && Object.keys(BACKGROUND[editorConfig.type])?.map((imageCategory) => {
+                            return <div className={`category ${activeBgImgCategory == imageCategory ? "active" : ""}`} key={Math.random()} onClick={() => setActiveBgImgCategory(imageCategory)}>{imageCategory}</div>
+                        })}
+                    </div>
+                    {activeBgImgCategory == 'All' ? <>
+                        <div className="all">
+                            {editorConfig.type && BACKGROUND[editorConfig.type] && Object.keys(BACKGROUND[editorConfig.type])?.map((imageCategory) => {
+                                return <div className="image-category-wrap" key={Math.random()}>
+                                    <div className="bg-images-list-wrap">
+                                        {editorConfig.type && BACKGROUND[editorConfig.type] && BACKGROUND[editorConfig.type][imageCategory]?.map((image) => {
+                                            return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => onSelectBgImage(image)}>
+                                                <img src={image} id={image} />
                                             </div>
-                                        </React.Fragment>
-                                    })}
-                                </div>
-                            </>}
-                            <div className='btn-wrap' onClick={() => onSelectTemplate(null)}>
-                                <div className="btn">Create template
-                                    <RiAddCircleLine />
-                                </div>
-                            </div>
-                        </div>
-                        <div className='editor-wrap' >
-                            <div className='editor-root' ref={editorWrapRef}>
-                                <div className="actions-wrap">
-                                    <div className='btn-wrap'>
-                                        <div className='btn' id="bg-change-btn" onClick={() => onBgChangeActionSelect('gallery')}>
-                                            <div className="text"> Change Backround</div>
-                                            <div className="icon"><RiImageEditFill /></div>
-                                        </div>
-                                    </div>
-
-                                    <div className='btn-wrap'>
-                                        <div className='btn save-btn' id="save-btn" onClick={handleSaveClick}>
-                                            <div className="text">Save Image</div>
-                                            <div className="icon"><VscSaveAll /></div>
-                                        </div>
-                                        <Menu
-                                            className='menu-item-wrap'
-                                            id="save-menu"
-                                            anchorEl={anchorEl}
-                                            open={showSaveActionModal}
-                                            onClose={() => handleSaveClick('')}
-                                            MenuListProps={{ 'aria-labelledby': 'save-btn' }}>
-                                            <MenuItem id="add" className='menu-item' onClick={() => handleSaveClick('add')}>
-                                                <div className="icon"><RiImageAddFill /></div>
-                                                <div className="text">Save as new template</div>
-                                            </MenuItem>
-                                            {(editorConfig.tenantId == 0 ? true : activeTemplate.tenantId != 0) && <MenuItem id="update" className='menu-item' onClick={() => handleSaveClick('update')}>
-                                                <div className="icon"><ImFilePicture /></div>
-                                                <div className="text">Update selected template</div>
-                                            </MenuItem>}
-                                            <MenuItem id="download" className='menu-item' onClick={() => onSubmitImage()}>
-                                                <div className="icon"><FcImageFile /></div>
-                                                <div className="text">Submit Banner Image</div>
-                                            </MenuItem>
-                                            <MenuItem id="download" className='menu-item' onClick={() => handleSaveClick('download')}>
-                                                <div className="icon"><GoDesktopDownload /></div>
-                                                <div className="text">Download</div>
-                                            </MenuItem>
-                                        </Menu>
-                                    </div>
-                                </div>
-
-                                {showEditor && (
-                                    <ImageEditor
-                                        source={bgImage}
-                                        onSave={(editedImageObject, designState) => {
-                                            setShowSaveActionModal(true);
-                                        }}
-                                        loadableDesignState={activeTemplate.designState}
-                                        onBeforeSave={() => false}
-                                        savingPixelRatio={1.2}
-                                        previewPixelRatio={window.devicePixelRatio}
-                                        onClose={onClose}
-                                        getCurrentImgDataFnRef={editedImage}
-                                        annotationsCommon={{
-                                            fill: 'black',
-                                        }}
-                                        Text={{
-                                            text: 'Add text here',
-                                            fontFamily: 'Poppins',
-                                            fonts: [
-                                                'Poppins',
-                                                { label: 'Mvboli', value: 'Mvboli' },
-                                                { label: 'Blackjack', value: 'Blackjack' },
-                                                { label: 'Domaine', value: 'Domaine' },
-                                                { label: 'Gothic', value: 'Gothic' },
-                                                { label: 'Claredon', value: 'Claredon' },
-                                                { label: 'ArgoFlats', value: 'ArgoFlats' },
-                                                { label: 'Antonio', value: 'Antonio' },
-                                                { label: 'Bakery', value: 'bakery' },
-                                                { label: 'Allura', value: 'Allura' },
-                                                { label: 'Lhandw', value: 'Lhandw' },
-                                                { label: 'Fontspring', value: 'Fontspring' },
-                                                { label: 'Philosopher', value: 'Philosopher' },
-                                                { label: 'Abuget', value: 'Abuget' },
-                                                { label: 'Alexis Marie', value: 'Alexis Marie' },
-                                                { label: 'Manta', value: 'Manta' },
-                                                { label: 'Wayfarer', value: 'Wayfarer' },
-                                                { label: 'Thunder', value: 'Thunder' },
-                                            ],
-                                            fontSize: 40,
-                                            letterSpacing: 0,
-                                            lineHeight: 1,
-                                            align: 'left',
-                                            fontStyle: 'normal',
-                                        }}
-                                        Crop={{ noPresets: true }}
-                                        Watermark={{ gallery: [...waterMarks] }}
-                                        tabsIds={[TABS.ANNOTATE, TABS.FILTERS, TABS.FINETUNE, TABS.WATERMARK, TABS.ADJUST]} //in case of new image add TABS.RESIZE
-                                        defaultTabId={TABS.ANNOTATE}
-                                        defaultToolId={TOOLS.TEXT}
-                                    />
-                                )}
-                                <div className="add-text-btn" onClick={() => setShowAddTextModal(true)}>
-                                    <div className="btn"><BsTextareaT />Text</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={multiFileToBase64} multiple />
-                    <button className="upload-multi-image" onClick={() => document.getElementById('background-img').click()}>Upload multi images</button> */}
-
-                    <HiddenUploadInput
-                        ref={uploadImgsInput}
-                        onChange={onUploadLocalBGImage}
-                        multiple
-                    />
-                    <Backdrop
-                        className="backdrop-modal-wrapper"
-                        open={showBgImagesModal ? true : false}
-                        onClick={onOutsideClick}
-                    >
-                        <div className="backdrop-modal-content d-f-c" style={{ width: `${showBgImagesModal ? '400px' : '0'}` }} ref={bgImageModalRef}>
-                            <div className="heading-wrap">
-                                <div className="heading">Select background image</div>
-                                <div className="modal-close" onClick={() => onChangeBg(null)}><AiOutlineCloseCircle /></div>
-                            </div>
-                            <div className="modal-containt">
-                                <div className="category-image-wrap">
-                                    <div className="cat-list-wrap">
-                                        <div className={`category ${activeBgImgCategory == 'All' ? "active" : ""}`} onClick={() => setActiveBgImgCategory('All')}>All</div>
-                                        {Object.keys(BACKGROUND[editorConfig.type])?.map((imageCategory) => {
-                                            return <div className={`category ${activeBgImgCategory == imageCategory ? "active" : ""}`} key={Math.random()} onClick={() => setActiveBgImgCategory(imageCategory)}>{imageCategory}</div>
                                         })}
                                     </div>
-                                    {activeBgImgCategory == 'All' ? <>
-                                        <div className="all">
-                                            {Object.keys(BACKGROUND[editorConfig.type])?.map((imageCategory) => {
-                                                return <div className="image-category-wrap" key={Math.random()}>
-                                                    <div className="bg-images-list-wrap">
-                                                        {BACKGROUND[editorConfig.type][imageCategory]?.map((image) => {
-                                                            return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => onSelectBgImage(image)}>
-                                                                <img src={image} id={image} />
-                                                            </div>
-                                                        })}
-                                                    </div>
+                                </div>
+                            })}
+                        </div>
+                    </> : <>
+                        <div className="image-category-wrap">
+                            <div className="bg-images-list-wrap">
+                                {BACKGROUND[editorConfig.type][activeBgImgCategory]?.map((image) => {
+                                    return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => onSelectBgImage(image)}>
+                                        <img src={image} id={image} />
+                                    </div>
+                                })}
+                            </div>
+                        </div>
+                    </>}
+                    <div className='btn-wrap bg-change'>
+                        <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Upload <RiImageAddFill2 /></div>
+                        <div className='btn' onClick={() => onChangeBg(bgImage)}>Apply <RiExchangeLine /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    return (
+        <>
+            <div className={`editor-component-wrap  ${showBgImages ? "modal-opened" : ""}`}>
+                <div className="editor-container ">
+                    {editorConfig.type ? <>
+                        <div className="page-heading">Respark Image Editor
+                            {editorConfig.title && <>- {editorConfig.title}</>}
+                            <span> Width:{editorConfig.width}, Height:{editorConfig.height}, Ratio:{editorConfig.aspectRatio}</span>
+                            <div className="get-instance" onClick={getEditorInstanceInConsole}>Get editor instance</div>
+                            <div className="tenant-store-input">
+                                <div className='input-wraps'>
+                                    <label className='' >Tenant</label>
+                                    <input type="number" value={editorConfig.tenantId} onChange={(e: any) => setEditorConfig({ ...editorConfig, tenantId: e.target.value })} />
+                                </div>
+                                <div className='input-wraps'>
+                                    <label className='' >Store</label>
+                                    <input type="number" value={editorConfig.storeId} onChange={(e: any) => setEditorConfig({ ...editorConfig, storeId: e.target.value })} />
+                                </div>
+                                <div className='input-wraps btn' onClick={() => getTemplatesData(editorConfig)}>Update</div>
+                            </div>
+                            <div className="icon-wrap"><BsInfoCircle />
+                                <EditorGuide />
+                            </div>
+                        </div>
+                        <div className='editor-wrapper'>
+                            <div className='editor-wrap' >
+                                <div className='editor-root' ref={editorWrapRef}>
+                                    {showTemplates && RenderTemplatesList()}
+                                    {showBgImages && renderBackgroundsList()}
+                                    <div className="actions-wrap">
+                                        <div className='btn-wrap'>
+                                            <div className='btn save-btn' id="save-btn" onClick={handleSaveClick}>
+                                                <div className="text">Save Image</div>
+                                                <div className="icon"><VscSaveAll /></div>
+                                            </div>
+                                            <Menu
+                                                className='menu-item-wrap'
+                                                id="save-menu"
+                                                anchorEl={anchorEl}
+                                                open={showSaveActionModal}
+                                                onClose={() => handleSaveClick('')}
+                                                MenuListProps={{ 'aria-labelledby': 'save-btn' }}>
+                                                <MenuItem id="add" className='menu-item' onClick={() => handleSaveClick('add')}>
+                                                    <div className="icon"><RiImageAddFill /></div>
+                                                    <div className="text">Save as new template</div>
+                                                </MenuItem>
+                                                {(editorConfig.tenantId == 0 ? true : activeTemplate.tenantId != 0) && <MenuItem id="update" className='menu-item' onClick={() => handleSaveClick('update')}>
+                                                    <div className="icon"><ImFilePicture /></div>
+                                                    <div className="text">Update selected template</div>
+                                                </MenuItem>}
+                                                <MenuItem id="download" className='menu-item' onClick={() => onSubmitImage()}>
+                                                    <div className="icon"><FcImageFile /></div>
+                                                    <div className="text">Submit Banner Image</div>
+                                                </MenuItem>
+                                                <MenuItem id="download" className='menu-item' onClick={() => handleSaveClick('download')}>
+                                                    <div className="icon"><GoDesktopDownload /></div>
+                                                    <div className="text">Download</div>
+                                                </MenuItem>
+                                            </Menu>
+                                        </div>
+                                    </div>
+                                    {showEditor && (
+                                        <ImageEditor
+                                            source={bgImage}
+                                            onSave={(editedImageObject, designState) => {
+                                                setShowSaveActionModal(true);
+                                            }}
+                                            loadableDesignState={activeTemplate.designState}
+                                            onBeforeSave={() => false}
+                                            savingPixelRatio={1.2}
+                                            previewPixelRatio={window.devicePixelRatio}
+                                            onClose={onClose}
+                                            getCurrentImgDataFnRef={editedImage}
+                                            annotationsCommon={{
+                                                fill: 'black',
+                                            }}
+                                            Text={{
+                                                text: 'Add text here',
+                                                fontFamily: 'Poppins',
+                                                fonts: [
+                                                    'Poppins',
+                                                    { label: 'Mvboli', value: 'Mvboli' },
+                                                    { label: 'Blackjack', value: 'Blackjack' },
+                                                    { label: 'Domaine', value: 'Domaine' },
+                                                    { label: 'Gothic', value: 'Gothic' },
+                                                    { label: 'Claredon', value: 'Claredon' },
+                                                    { label: 'ArgoFlats', value: 'ArgoFlats' },
+                                                    { label: 'Antonio', value: 'Antonio' },
+                                                    { label: 'Bakery', value: 'bakery' },
+                                                    { label: 'Allura', value: 'Allura' },
+                                                    { label: 'Lhandw', value: 'Lhandw' },
+                                                    { label: 'Fontspring', value: 'Fontspring' },
+                                                    { label: 'Philosopher', value: 'Philosopher' },
+                                                    { label: 'Abuget', value: 'Abuget' },
+                                                    { label: 'Alexis Marie', value: 'Alexis Marie' },
+                                                    { label: 'Manta', value: 'Manta' },
+                                                    { label: 'Wayfarer', value: 'Wayfarer' },
+                                                    { label: 'Thunder', value: 'Thunder' },
+                                                ],
+                                                fontSize: 40,
+                                                letterSpacing: 0,
+                                                lineHeight: 1,
+                                                align: 'left',
+                                                fontStyle: 'normal',
+                                            }}
+                                            Crop={{ noPresets: true }}
+                                            Watermark={{ gallery: [...waterMarks] }}
+                                            tabsIds={[TABS.TEMPLATE, TABS.BACKGROUND, TABS.ANNOTATE, TABS.FILTERS, TABS.FINETUNE, TABS.WATERMARK, TABS.ADJUST]} //in case of new image add TABS.RESIZE
+                                            defaultTabId={currentTab}
+                                            defaultToolId={TOOLS.TEXT}
+                                        />
+                                    )}
+                                    {/* <div className="add-text-btn" onClick={() => setShowAddTextModal(true)}>
+                                        <div className="btn"><BsTextareaT />Text</div>
+                                    </div> */}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={multiFileToBase64} multiple />
+                    <button className="upload-multi-image" onClick={() => document.getElementById('background-img').click()}>Upload multi images</button> */}
+
+                        <HiddenUploadInput
+                            ref={uploadImgsInput}
+                            onChange={onUploadLocalBGImage}
+                            multiple
+                        />
+                        {/* <Backdrop
+                            className="backdrop-modal-wrapper"
+                            open={showBgImages ? true : false}
+                            onClick={onOutsideClick}
+                        >
+                         
+                        </Backdrop> */}
+                        <Backdrop
+                            className="backdrop-modal-wrapper cropper-modal"
+                            open={showCropper.active ? true : false}
+                        >
+                            <div className="backdrop-modal-content d-f-c "
+                                style={{
+                                    height: `auto`,
+                                    width: `${editorConfig.width + 500}px`
+                                }}>
+                                <div className="modal-close" onClick={() => setShowCropper({ active: false, img: "" })}><AiOutlineCloseCircle /></div>
+                                <div className="heading">Crop Selected Image</div>
+                                <div className="modal-containt">
+                                    <ImageCropper
+                                        ref={cropperRef}
+                                        editorConfig={editorConfig}
+                                        IMG={showCropper.img} />
+                                    <div className="btn-wrap">
+                                        <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Change Image</div>
+                                        <div className="btn" onClick={onCropSubmit}>Crop Image</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Backdrop>
+                        <Backdrop
+                            className="backdrop-modal-wrapper confirmation-modal"
+                            open={showTemplateChangeConfirmation.active ? true : false}
+                        >
+                            <div className="backdrop-modal-content d-f-c " style={{ height: '300px' }}>
+                                <div className="modal-close" onClick={() => {
+                                    setShowTemplateChangeConfirmation({ active: false, template: {} });
+                                    setUserAcceptedTemplateChangeMessage(false);
+                                }}><AiOutlineCloseCircle /></div>
+                                <div className="heading">Change template</div>
+                                <div className="modal-containt">
+                                    <div className={`message ${userAcceptedTemplateChangeMessage ? " active" : ""}`} onClick={() => setUserAcceptedTemplateChangeMessage(!userAcceptedTemplateChangeMessage)}>
+                                        <div className={`checkbox`}></div>
+                                        Dont show again
+                                    </div>
+                                    <div className="warning-msg">Please make sure that all current template changes will reverted and this action cannot be undo.</div>
+                                    <div className="btn-wrap">
+                                        <div className="btn" onClick={replaceTemplate}>Replace current template</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Backdrop>
+                        <Backdrop
+                            className="backdrop-modal-wrapper text-type-modal"
+                            open={showAddTextModal ? true : false}
+                            onClick={onOutsideClick}
+                        >
+                            <div className="backdrop-modal-content d-f-c" style={{ width: `${showAddTextModal ? '400px' : '0'}` }} ref={testStyleModalRef}>
+                                <div className="modal-close" onClick={() => setShowAddTextModal(false)}><AiOutlineCloseCircle /></div>
+                                <div className="heading">Click text to add to image</div>
+                                <div className="modal-containt">
+                                    <div className="headings-wrap text-styles-wrap">
+                                        {Headings.map((style: any) => {
+                                            return <div className="text-type" key={Math.random()} onClick={() => addTextToEditorInstance(style)}>
+                                                <div className="text"
+                                                    style={{
+                                                        fontStyle: style.fontStyle,
+                                                        fontSize: style.fontSize / 1.5,
+                                                        color: style.fill,
+                                                        textAlign: style.align,
+                                                        fontFamily: style.fontFamily,
+                                                        letterSpacing: style.letterSpacing,
+                                                        lineHeight: style.lineHeight,
+                                                    }}>
+                                                    {style.text}
                                                 </div>
-                                            })}
-                                        </div>
-                                    </> : <>
-                                        <div className="image-category-wrap">
-                                            <div className="bg-images-list-wrap">
-                                                {BACKGROUND[editorConfig.type][activeBgImgCategory]?.map((image) => {
-                                                    return <div className={`img-wrap ${bgImage == image ? 'active' : ""}`} key={Math.random()} onClick={() => onSelectBgImage(image)}>
-                                                        <img src={image} id={image} />
-                                                    </div>
-                                                })}
                                             </div>
-                                        </div>
-                                    </>}
-                                </div>
-                            </div>
-                            <div className='btn-wrap bg-change'>
-                                <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Upload from your computer <RiImageAddFill2 /></div>
-                                {/* <div className='btn' onClick={() => onChangeBg(null)}>Cancel <IoMdCloseCircleOutline /></div> */}
-                                <div className='btn' onClick={() => onChangeBg(bgImage)}>Apply <RiExchangeLine /></div>
-                            </div>
-                        </div>
-                    </Backdrop>
-                    <Backdrop
-                        className="backdrop-modal-wrapper cropper-modal"
-                        open={showCropper.active ? true : false}
-                    >
-                        <div className="backdrop-modal-content d-f-c "
-                            style={{
-                                height: `auto`,
-                                width: `${editorConfig.width + 500}px`
-                            }}>
-                            <div className="modal-close" onClick={() => setShowCropper({ active: false, img: "" })}><AiOutlineCloseCircle /></div>
-                            <div className="heading">Crop Selected Image</div>
-                            <div className="modal-containt">
-                                <ImageCropper
-                                    ref={cropperRef}
-                                    editorConfig={editorConfig}
-                                    IMG={showCropper.img} />
-                                <div className="btn-wrap">
-                                    <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Change Image</div>
-                                    <div className="btn" onClick={onCropSubmit}>Crop Image</div>
-                                </div>
-                            </div>
-                        </div>
-                    </Backdrop>
-                    <Backdrop
-                        className="backdrop-modal-wrapper confirmation-modal"
-                        open={showTemplateChangeConfirmation.active ? true : false}
-                    >
-                        <div className="backdrop-modal-content d-f-c " style={{ height: '300px' }}>
-                            <div className="modal-close" onClick={() => {
-                                setShowTemplateChangeConfirmation({ active: false, template: {} });
-                                setUserAcceptedTemplateChangeMessage(false);
-                            }}><AiOutlineCloseCircle /></div>
-                            <div className="heading">Change template</div>
-                            <div className="modal-containt">
-                                <div className={`message ${userAcceptedTemplateChangeMessage ? " active" : ""}`} onClick={() => setUserAcceptedTemplateChangeMessage(!userAcceptedTemplateChangeMessage)}>
-                                    <div className={`checkbox`}></div>
-                                    Dont show again
-                                </div>
-                                <div className="warning-msg">Please make sure that all current template changes will reverted and this action cannot be undo.</div>
-                                <div className="btn-wrap">
-                                    <div className="btn" onClick={replaceTemplate}>Replace current template</div>
-                                </div>
-                            </div>
-                        </div>
-                    </Backdrop>
-                    <Backdrop
-                        className="backdrop-modal-wrapper text-type-modal"
-                        open={showAddTextModal ? true : false}
-                        onClick={onOutsideClick}
-                    >
-                        <div className="backdrop-modal-content d-f-c" style={{ width: `${showAddTextModal ? '400px' : '0'}` }} ref={testStyleModalRef}>
-                            <div className="modal-close" onClick={() => setShowAddTextModal(false)}><AiOutlineCloseCircle /></div>
-                            <div className="heading">Click text to add to image</div>
-                            <div className="modal-containt">
-                                <div className="headings-wrap text-styles-wrap">
-                                    {Headings.map((style: any) => {
-                                        return <div className="text-type" key={Math.random()} onClick={() => addTextToEditorInstance(style)}>
-                                            <div className="text"
-                                                style={{
-                                                    fontStyle: style.fontStyle,
-                                                    fontSize: style.fontSize / 1.5,
-                                                    color: style.fill,
-                                                    textAlign: style.align,
-                                                    fontFamily: style.fontFamily,
-                                                    letterSpacing: style.letterSpacing,
-                                                    lineHeight: style.lineHeight,
-                                                }}>
-                                                {style.text}
+                                        })}
+                                    </div>
+                                    <div className="text-styles-wrap">
+                                        {textStyles.map((style: any) => {
+                                            return <div className="text-type" key={Math.random()} onClick={() => addTextToEditorInstance(style)}>
+                                                <div className="text"
+                                                    style={{
+                                                        fontStyle: style.fontStyle,
+                                                        fontSize: style.fontSize / 2,
+                                                        color: style.fill,
+                                                        textAlign: style.align,
+                                                        fontFamily: style.fontFamily,
+                                                        letterSpacing: style.letterSpacing,
+                                                        lineHeight: style.lineHeight,
+                                                        stroke: style.stroke,
+                                                        strokeWidth: style.strokeWidth,
+                                                        WebkitTextStroke: style.strokeWidth,
+                                                        WebkitTextStrokeColor: style.stroke,
+                                                        width: `${style.width / 2}px`,
+                                                        height: `${style.height / 2}px`,
+                                                        textShadow: `${style.shadowOffsetX}px ${style.shadowOffsetY}px ${style.shadowBlur}px ${style.shadowColor}`,
+                                                    }}>
+                                                    {style.text}
+                                                </div>
                                             </div>
-                                        </div>
-                                    })}
-                                </div>
-                                <div className="text-styles-wrap">
-                                    {textStyles.map((style: any) => {
-                                        return <div className="text-type" key={Math.random()} onClick={() => addTextToEditorInstance(style)}>
-                                            <div className="text"
-                                                style={{
-                                                    fontStyle: style.fontStyle,
-                                                    fontSize: style.fontSize / 2,
-                                                    color: style.fill,
-                                                    textAlign: style.align,
-                                                    fontFamily: style.fontFamily,
-                                                    letterSpacing: style.letterSpacing,
-                                                    lineHeight: style.lineHeight,
-                                                    stroke: style.stroke,
-                                                    strokeWidth: style.strokeWidth,
-                                                    WebkitTextStroke: style.strokeWidth,
-                                                    WebkitTextStrokeColor: style.stroke,
-                                                    width: `${style.width / 2}px`,
-                                                    height: `${style.height / 2}px`,
-                                                    textShadow: `${style.shadowOffsetX}px ${style.shadowOffsetY}px ${style.shadowBlur}px ${style.shadowColor}`,
-                                                }}>
-                                                {style.text}
-                                            </div>
-                                        </div>
-                                    })}
+                                        })}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </Backdrop>
+                        </Backdrop>
+                    </> : <>
+                        <Spinner />
+                    </>}
                 </div>
             </div>
         </>
     );
 }
-export default Editor;
+export default memo(Editor);

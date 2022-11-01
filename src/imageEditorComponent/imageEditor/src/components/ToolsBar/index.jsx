@@ -1,13 +1,14 @@
 /** External Depepdencneis */
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useContext } from 'react';
 
 /** Internal Depepdencneis */
 import { SELECT_TOOL } from '../../actions';
 import { TABS_TOOLS, TOOLS_ITEMS } from '../../components/tools/tools.constants';
-import { TABS_IDS } from '../../utils/constants';
+import { TABS_IDS, TOOLS_IDS } from '../../utils/constants';
 import { useStore } from '../../hooks';
 import { StyledToolsBar, StyledToolsBarItems } from './ToolsBar.styled';
 import ToolsBarItemOptionsWrapper from './ToolsBarItemOptionsWrapper';
+import { EditorContext } from '../../../../../imageEditorComponent'
 
 const ToolsBar = () => {
   const {
@@ -20,6 +21,7 @@ const ToolsBar = () => {
     config: { defaultTabId, defaultToolId, useCloudimage },
   } = useStore();
   const currentTabId = tabId || defaultTabId;
+  const { currentId, setCurrentId } = useContext(EditorContext);
   const currentToolId =
     toolId || defaultToolId || TABS_TOOLS[currentTabId]?.[0];
 
@@ -29,6 +31,8 @@ const ToolsBar = () => {
   );
 
   const selectTool = useCallback((newToolId) => {
+    if (newToolId == TOOLS_IDS.TEXT) setCurrentId(TOOLS_IDS.TEXT);
+    else setCurrentId('');
     dispatch({
       type: SELECT_TOOL,
       payload: {
@@ -41,7 +45,6 @@ const ToolsBar = () => {
     () =>
       tabTools.map((id) => {
         const { Item, hideFn } = TOOLS_ITEMS[id];
-
         return (
           Item &&
           (!hideFn || !hideFn({ useCloudimage })) && (
@@ -93,15 +96,15 @@ const ToolsBar = () => {
   }, []);
 
   return (
-    <StyledToolsBar className="respark_tools-bar-wrapper">
-      {(ToolOptionsComponent && t) && <ToolsBarItemOptionsWrapper>
-        {ToolOptionsComponent && <ToolOptionsComponent t={t} />}
-      </ToolsBarItemOptionsWrapper>}
+    <StyledToolsBar className={`respark_tools-bar-wrapper ${tabId}`}>
       {items && (
         <StyledToolsBarItems className="respark_tools-bar">
           {items}
         </StyledToolsBarItems>
       )}
+      {(ToolOptionsComponent && t) && <ToolsBarItemOptionsWrapper>
+        {ToolOptionsComponent && <ToolOptionsComponent t={t} />}
+      </ToolsBarItemOptionsWrapper>}
     </StyledToolsBar>
   );
 };

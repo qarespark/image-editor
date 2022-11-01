@@ -26,7 +26,7 @@ const ADDED_IMG_SPACING_PERCENT = 0.15;
 
 const ImageOptions = () => {
   const [isLoading, setIsLoading] = useState();
-  const [showImagesModal, setShowImagesModal] = useState(true)
+  const [showImagesModal, setShowImagesModal] = useState(false)
   const uploadImgsInput = useRef();
   const [selectedImage, setSelectedImage] = useState('')
   const modalRef = useRef(null);
@@ -169,16 +169,17 @@ const ImageOptions = () => {
   return (
     <>
       <ImageControls image={image} saveImage={saveImage} t={t}>
-        <Button
-          className="respark_image-tool-add-option"
-          color="secondary"
-          onClick={() => isLoading ? undefined : setShowImagesModal(true)}
-          disabled={isLoading}
-          size="sm"
-          style={{ maxHeight: 24 }}
-        >
-          {isLoading ? t('importing') : t('addImage')}
-        </Button>
+        <div className="respark_image-tool-add-option">
+          <Button
+            color="secondary"
+            onClick={() => isLoading ? undefined : setShowImagesModal(true)}
+            disabled={isLoading}
+            size="sm"
+            style={{ maxHeight: 24 }}
+          >
+            {isLoading ? t('importing') : t('addImage')}
+          </Button>
+        </div>
         <HiddenUploadInput
           ref={uploadImgsInput}
           onChange={isLoading ? undefined : importImages}

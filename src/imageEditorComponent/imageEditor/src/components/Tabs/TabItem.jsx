@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 
 
 import { StyledTabItem, StyledTabItemLabel } from './Tabs.styled';
-import { TABS } from '../..';
 
 const TabItem = ({ id, label, Icon, isSelected, onClick }) => {
   const [showGuide, setShowGuide] = useState(true);

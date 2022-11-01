@@ -240,33 +240,28 @@ const Watermark = () => {
           </ImageControls>
         </StyledControlsWrapper>
       )}
-      <StyledWatermarkWrapper
-        className="respark_watermark-add-wrapper"
-        noWrap={Boolean(watermark?.name)}
-      >
-        <ButtonWithMenu
-          className="respark_watermark-add"
-          color="secondary"
-          label={t('addWatermark')}
-          title={t('addWatermarkTitle')}
-          menuPosition="top"
-          menuItems={menuItems}
-          menuFromBtn
-        />
-        <WatermarksGallery
-          selectWatermark={addImgWatermark}
-          style={
-            isPhoneScreen && Boolean(watermark?.name)
-              ? { width: '55%' }
-              : undefined
-          }
-        />
-        <HiddenUploadInput
-          onChange={isLoading ? undefined : importWatermarkImg}
-          disabled={isLoading}
-          ref={uploadImgInput}
-        />
-      </StyledWatermarkWrapper>
+      <WatermarksGallery
+        selectWatermark={addImgWatermark}
+        style={
+          isPhoneScreen && Boolean(watermark?.name)
+            ? { width: '55%' }
+            : undefined
+        }
+      />
+      <ButtonWithMenu
+        className="respark_watermark-add"
+        color="secondary"
+        label={t('addWatermark')}
+        title={t('addWatermarkTitle')}
+        menuPosition="top"
+        menuItems={menuItems}
+        menuFromBtn
+      />
+      <HiddenUploadInput
+        onChange={isLoading ? undefined : importWatermarkImg}
+        disabled={isLoading}
+        ref={uploadImgInput}
+      />
     </div>
   );
 };

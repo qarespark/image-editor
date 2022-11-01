@@ -286,22 +286,31 @@ const App = () => {
       $size={rootSize}
     >
       {isLoadingGlobally && <Spinner label={t('loading')} />}
-      {!showCanvasOnly && <Topbar />}
       {originalImage && feedback.duration !== 0 && (
         <StyledMainContent className="respark_main-container">
-          {!isPhoneScreen && !showCanvasOnly && <Tabs />}
-          <StyledCanvasAndTools className="respark_editor-content">
-            <MainCanvas />
-            {!showCanvasOnly &&
-              (isPhoneScreen ? (
+          <div className="left-nav">
+            {!isPhoneScreen && !showCanvasOnly && <Tabs />}
+          </div>
+          <div className="right-content">
+
+            <div className="tool-bar-wrap">
+              {!showCanvasOnly &&
+                isPhoneScreen ?
                 <StyledPhoneToolsAndTabs className="respark_phone-tools-tabs-wrapper">
                   <ToolsBar />
                   <Tabs />
                 </StyledPhoneToolsAndTabs>
-              ) : (
-                <ToolsBar />
-              ))}
-          </StyledCanvasAndTools>
+                : <ToolsBar />}
+            </div>
+
+            <div className="top-bar-canvas-wrap">
+              {!showCanvasOnly && <Topbar />}
+              <StyledCanvasAndTools className="respark_editor-content">
+                <MainCanvas />
+              </StyledCanvasAndTools>
+            </div>
+
+          </div>
         </StyledMainContent>
       )}
       <NotificationPopup />

@@ -67,7 +67,7 @@ const ColorInput = ({ position = 'top', onChange, color }) => {
         $color={currentColor}
         onChange={onChange}
       />
-      <Popper
+      {anchorEl && <Popper
         className="respark_color-picker"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -82,7 +82,7 @@ const ColorInput = ({ position = 'top', onChange, color }) => {
           pinnedColors={pinnedColors}
           showTransparentColor
         />
-      </Popper>
+      </Popper>}
     </>
   );
 };

@@ -1,5 +1,5 @@
 export default {
-    "Small_Banner": {
+    "small_banner": {
         "Abstarct": [
             "https://image-editor-ten.vercel.app/Backgrounds/Small_Banner/Abstarct/Frame%20229.png",
             "https://image-editor-ten.vercel.app/Backgrounds/Small_Banner/Abstarct/Frame%20189.png",
@@ -49,7 +49,7 @@ export default {
             "https://image-editor-ten.vercel.app/Backgrounds/Small_Banner/Liquid/Frame%20208.png"
         ]
     },
-    "Large_Banner": {
+    "large_banner": {
         "Salon": [
             "https://image-editor-ten.vercel.app/Backgrounds/Large_Banner/Salon/Frame%20164.png",
             "https://image-editor-ten.vercel.app/Backgrounds/Large_Banner/Salon/Frame%20165.png",
@@ -212,7 +212,7 @@ export default {
             "https://image-editor-ten.vercel.app/Backgrounds/Large_Banner/Watercolor/Frame%2037.png"
         ]
     },
-    "Square_Banner": {
+    "square_banner": {
         "Diwali": [
             "https://image-editor-ten.vercel.app/Backgrounds/Square_Banner/Diwali/Frame%20265.png",
             "https://image-editor-ten.vercel.app/Backgrounds/Square_Banner/Diwali/Frame%20266.png",

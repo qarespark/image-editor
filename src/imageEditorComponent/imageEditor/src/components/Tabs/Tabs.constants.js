@@ -3,6 +3,14 @@
 
 import { TABS_IDS } from '../../utils/constants';
 
+function BsImageAlt(props) {
+  return <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><g><path fill="none" d="M0 0h24v24H0z"></path><path d="M21 15v3h3v2h-3v3h-2v-3h-3v-2h3v-3h2zm.008-12c.548 0 .992.445.992.993v9.349A5.99 5.99 0 0 0 20 13V5H4l.001 14 9.292-9.293a.999.999 0 0 1 1.32-.084l.093.085 3.546 3.55a6.003 6.003 0 0 0-3.91 7.743L2.992 21A.993.993 0 0 1 2 20.007V3.993A1 1 0 0 1 2.992 3h18.016zM8 7a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"></path></g></svg>;
+}
+
+function Templates(props) {
+  return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 18 16" height="1em" width="1em" {...props}><path d="M17 2h-1v-1c0-0.55-0.45-1-1-1h-14c-0.55 0-1 0.45-1 1v12c0 0.55 0.45 1 1 1h1v1c0 0.55 0.45 1 1 1h14c0.55 0 1-0.45 1-1v-12c0-0.55-0.45-1-1-1zM2 3v10h-0.998c-0.001-0.001-0.001-0.001-0.002-0.002v-11.996c0.001-0.001 0.001-0.001 0.002-0.002h13.996c0.001 0.001 0.001 0.001 0.002 0.002v0.998h-12c-0.55 0-1 0.45-1 1v0zM17 14.998c-0.001 0.001-0.001 0.001-0.002 0.002h-13.996c-0.001-0.001-0.001-0.001-0.002-0.002v-11.996c0.001-0.001 0.001-0.001 0.002-0.002h13.996c0.001 0.001 0.001 0.001 0.002 0.002v11.996z" /><path d="M15 5.5c0 0.828-0.672 1.5-1.5 1.5s-1.5-0.672-1.5-1.5 0.672-1.5 1.5-1.5 1.5 0.672 1.5 1.5z" /><path d="M16 14h-12v-2l3.5-6 4 5h1l3.5-3z" /></svg>;
+}
+
 function RiImageEditLine(props) {
   return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><g><path fill="none" d="M0 0H24V24H0z"></path><path d="M20 3c.552 0 1 .448 1 1v1.757l-2 2V5H5v8.1l4-4 4.328 4.329-1.327 1.327-.006 4.239 4.246.006 1.33-1.33L18.899 19H19v-2.758l2-2V20c0 .552-.448 1-1 1H4c-.552 0-1-.448-1-1V4c0-.552.448-1 1-1h16zm1.778 4.808l1.414 1.414L15.414 17l-1.416-.002.002-1.412 7.778-7.778zM15.5 7c.828 0 1.5.672 1.5 1.5s-.672 1.5-1.5 1.5S14 9.328 14 8.5 14.672 7 15.5 7z"></path></g></svg>;
 }
@@ -19,10 +27,6 @@ function BiImages(props) {
   return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 24 24" height="1em" width="1em" {...props}><path d="M20,2H8C6.897,2,6,2.897,6,4v12c0,1.103,0.897,2,2,2h12c1.103,0,2-0.897,2-2V4C22,2.897,21.103,2,20,2z M8,16V4h12 l0.002,12H8z" /><path d="M4,8H2v12c0,1.103,0.897,2,2,2h12v-2H4V8z" /><path d="M12 12L11 11 9 14 19 14 15 8z" /></svg>;
 }
 
-function IoIosImage(props) {
-  return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 512 512" height="1em" width="1em" {...props}><path d="M112.6 312.3h190.7c4.5 0 7.1-5.1 4.5-8.8l-95.4-153.4c-2.2-3.2-6.9-3.2-9.1 0L108 303.5c-2.6 3.7.1 8.8 4.6 8.8zM306.7 254.3l35 55.7c1 1.5 2.7 2.4 4.5 2.4h53.2c4.5 0 7.1-5.1 4.5-8.8l-61.6-87.7c-2.2-3.2-6.9-3.2-9.1 0L306.6 248c-1.2 1.8-1.2 4.3.1 6.3zM351.1 167.9c13.1-1.3 23.7-11.9 25-25 1.8-17.7-13-32.5-30.7-30.7-13.1 1.3-23.7 11.9-25 25-1.7 17.7 13 32.5 30.7 30.7z" /><path d="M432 48H80c-17.7 0-32 14.3-32 32v352c0 17.7 14.3 32 32 32h352c17.7 0 32-14.3 32-32V80c0-17.7-14.3-32-32-32zm-2.7 280c0 4.4-3.6 8-8 8H90.7c-4.4 0-8-3.6-8-8V90.7c0-4.4 3.6-8 8-8h330.7c4.4 0 8 3.6 8 8V328z" /></svg>;
-}
-
 function RiPictureInPicture2Fill(props) {
   return <svg stroke="currentColor" fill="currentColor" strokeWidth={0} viewBox="0 0 24 24" height="1em" width="1em" {...props}><g><path fill="none" d="M0 0h24v24H0z" /><path fillRule="nonzero" d="M21 3a1 1 0 0 1 1 1v7h-2V5H4v14h6v2H3a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h18zm0 10a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h8zM6.707 6.293l2.25 2.25L11 6.5V12H5.5l2.043-2.043-2.25-2.25 1.414-1.414z" /></g></svg>;
 }
@@ -33,25 +37,14 @@ function MdBrandingWatermark(props) {
 
 export const AVAILABLE_TABS = [
   {
-    id: TABS_IDS.ADJUST,
-    labelKey: 'adjustTab',
-    icon: BiImages,
+    id: TABS_IDS.TEMPLATE,
+    labelKey: 'templateTab',
+    icon: Templates,
   },
   {
-    id: TABS_IDS.FINETUNE,
-    labelKey: 'finetuneTab',
-    icon: BsFillImageFill,
-  },
-  {
-    id: TABS_IDS.FILTERS,
-    labelKey: 'filtersTab',
-    icon: IoIosImages,
-    hideFn: ({ useCloudimage }) => useCloudimage,
-  },
-  {
-    id: TABS_IDS.WATERMARK,
-    labelKey: 'watermarkTab',
-    icon: MdBrandingWatermark,
+    id: TABS_IDS.BACKGROUND,
+    labelKey: 'backgroundTab',
+    icon: BsImageAlt,
   },
   {
     id: TABS_IDS.ANNOTATE,
@@ -60,8 +53,29 @@ export const AVAILABLE_TABS = [
     hideFn: ({ useCloudimage }) => useCloudimage,
   },
   {
+    id: TABS_IDS.FILTERS,
+    labelKey: 'filtersTab',
+    icon: IoIosImages,
+    hideFn: ({ useCloudimage }) => useCloudimage,
+  },
+  {
+    id: TABS_IDS.FINETUNE,
+    labelKey: 'finetuneTab',
+    icon: BsFillImageFill,
+  },
+  {
+    id: TABS_IDS.WATERMARK,
+    labelKey: 'watermarkTab',
+    icon: MdBrandingWatermark,
+  },
+  {
     id: TABS_IDS.RESIZE,
     labelKey: 'resizeTab',
     icon: RiPictureInPicture2Fill,
+  },
+  {
+    id: TABS_IDS.ADJUST,
+    labelKey: 'adjustTab',
+    icon: BiImages,
   },
 ];

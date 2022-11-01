@@ -1,12 +1,11 @@
 
-import React, { useCallback, useMemo } from 'react';
-
-
+import React, { useCallback, useMemo, useContext } from 'react';
 import { SELECT_TAB } from '../../actions';
 import { useStore } from '../../hooks';
 import TabItem from './TabItem';
 import { AVAILABLE_TABS } from './Tabs.constants';
 import { StyledTabs } from './Tabs.styled';
+import { EditorContext } from '../../../../index'
 
 const Tabs = () => {
   const {
@@ -15,7 +14,7 @@ const Tabs = () => {
     tabId = null,
     config: { tabsIds, defaultTabId, useCloudimage },
   } = useStore();
-
+  const { setCurrentTab } = useContext(EditorContext);
   const currentTabId = tabId || defaultTabId;
 
   const chosenTabs = useMemo(() => {
@@ -37,6 +36,7 @@ const Tabs = () => {
   }, [tabsIds]);
 
   const selectTab = useCallback((newTabId) => {
+    setCurrentTab(newTabId);
     dispatch({
       type: SELECT_TAB,
       payload: {

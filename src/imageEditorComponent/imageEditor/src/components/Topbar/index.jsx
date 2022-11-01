@@ -25,21 +25,6 @@ const Topbar = () => {
 
   return (
     <StyledTopbar reverseDirection={showBackButton} className="respark_topbar">
-      <StyledFlexCenterAlignedContainer
-        reverseDirection={showBackButton}
-        className="respark_topbar-buttons-wrapper"
-      >
-        {/* <SaveButton /> */}
-        <StyledHistoryButtonsWrapper className="respark_topbar-history-buttons">
-          <ResetButton margin="0" />
-          <UndoButton margin="0" />
-          <RedoButton margin="0" />
-        </StyledHistoryButtonsWrapper>
-      </StyledFlexCenterAlignedContainer>
-
-      <StyledFlexCenterAlignedContainer className="">
-        <ImageDimensionsAndDisplayToggle />
-      </StyledFlexCenterAlignedContainer>
 
       <StyledFlexCenterAlignedContainer className="respark_topbar-center-options zoom">
         {!disableZooming && (
@@ -48,7 +33,17 @@ const Topbar = () => {
             <CanvasZooming />
           </>
         )}
+
       </StyledFlexCenterAlignedContainer>
+
+      <StyledHistoryButtonsWrapper className="respark_topbar-center-options respark_topbar-history-buttons">
+        <ResetButton margin="0" />
+        <UndoButton margin="0" />
+        <RedoButton margin="0" />
+      </StyledHistoryButtonsWrapper>
+
+      <ImageDimensionsAndDisplayToggle />
+
       <StyledFlexCenterAlignedContainer className="respark_topbar-center-options close-btn">
         {showBackButton ? <BackButton /> : <CloseButton />}
       </StyledFlexCenterAlignedContainer>
