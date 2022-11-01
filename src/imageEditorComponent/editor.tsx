@@ -205,6 +205,15 @@ function Editor({ props }: any = {}) {
                 if (params.get('type')) {
                     config.type = params.get('type');
                 }
+                if (params.get('w')) {
+                    config.width = Number(params.get('w'));
+                }
+                if (params.get('h')) {
+                    config.height = Number(params.get('h'));
+                }
+                if (params.get('r')) {
+                    config.aspectRatio = Number(params.get('r'));
+                }
             }
             console.log(config);
             setTimeout(() => {
@@ -677,8 +686,8 @@ function Editor({ props }: any = {}) {
                         </div>
                     </>}
                     <div className='btn-wrap bg-change'>
-                        <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Upload <RiImageAddFill2 /></div>
-                        <div className='btn' onClick={() => onChangeBg(bgImage)}>Apply <RiExchangeLine /></div>
+                        <div className="btn" onClick={() => onBgChangeActionSelect('self')}>Upload from your computer<RiImageAddFill2 /></div>
+                        {/* <div className='btn' onClick={() => onChangeBg(bgImage)}>Apply <RiExchangeLine /></div> */}
                     </div>
                 </div>
             </div>
@@ -811,13 +820,6 @@ function Editor({ props }: any = {}) {
                             onChange={onUploadLocalBGImage}
                             multiple
                         />
-                        {/* <Backdrop
-                            className="backdrop-modal-wrapper"
-                            open={showBgImages ? true : false}
-                            onClick={onOutsideClick}
-                        >
-                         
-                        </Backdrop> */}
                         <Backdrop
                             className="backdrop-modal-wrapper cropper-modal"
                             open={showCropper.active ? true : false}
