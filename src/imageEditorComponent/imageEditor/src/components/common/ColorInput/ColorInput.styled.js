@@ -20,7 +20,7 @@ const StyledPickerTrigger = styled.div.attrs(({ $color }) => ({
 `;
 
 const StyledColorPicker = styled(ColorPicker)`
-  max-width: 212px;
+  max-width: 300px;
 `;
 
 export { StyledPickerTrigger, StyledColorPicker };

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Popper from '../../../element/ui/core/popper';
-
+import * as  lc_color_picker from './lc_color_picker'
 
 import { useStore } from '../../../hooks';
 import { SET_LATEST_COLOR } from '../../../actions';
@@ -37,7 +37,7 @@ const ColorInput = ({ position = 'top', onChange, color }) => {
   const changeColor = (_newColorHex, rgba, newPinnedColors) => {
     setCurrentColor(rgba);
     onChange(rgba);
-    changePinnedColors(newPinnedColors);
+    newPinnedColors && changePinnedColors(newPinnedColors);
 
     if (latestColor !== rgba) {
       dispatch({
@@ -59,8 +59,44 @@ const ColorInput = ({ position = 'top', onChange, color }) => {
     onChange(colorToSet);
   }, [color, selectionsIds]);
 
+  // useEffect(() => {
+  //   window.lc_color_picker('input[name=full]', {
+  //     transparency: true,
+  //     open_on_focus: true,
+  //     wrap_width: '100%',
+  //     preview_style: {
+  //       input_padding: 45,
+  //       side: 'left',
+  //       width: 40,
+  //     },
+  //     fallback_colors: ['#ff0', 'linear-gradient(90deg, rgba(255, 255, 255, .4), #000)'],
+
+  //     on_change: function (new_value, target_field) {
+  //       console.log(new_value, target_field);
+  //       setCurrentColor(new_value);
+  //       dispatch({
+  //         type: SET_LATEST_COLOR,
+  //         payload: {
+  //           latestColor: new_value,
+  //         },
+  //       });
+  //     },
+  //   });
+  // }, [])
+
+  const oneywPickerClick = () => {
+    const eyeDropper = new window.EyeDropper();
+    eyeDropper.open().then((result) => {
+      console.log(result);
+      changeColor('', result.sRGBHex, null);
+    }).catch((e) => {
+      console.log(e)
+    });
+  }
+
   return (
     <>
+      <script src="./lc_color_picker"></script>
       <StyledPickerTrigger
         className="respark_color-picker-triggerer"
         onClick={togglePicker}
@@ -82,7 +118,9 @@ const ColorInput = ({ position = 'top', onChange, color }) => {
           pinnedColors={pinnedColors}
           showTransparentColor
         />
+        {/* {window.EyeDropper && <button id="start-button" onClick={oneywPickerClick}>Open the eyedropper</button>} */}
       </Popper>}
+      {/* <input type="text" name="full" value="linear-gradient(90deg, rgba(255, 255, 255, .4), #000)" /> */}
     </>
   );
 };

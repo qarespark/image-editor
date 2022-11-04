@@ -35,7 +35,7 @@ var RangePickerWrapper = styled.div.attrs({
   componentId: "sc-qj4xo5-2"
 })(function (_ref2) {
   var color = _ref2.color;
-  return css(["position:relative;border-radius:2px;width:186px;height:180px;user-select:none;cursor:crosshair;background-color:", ";"], color);
+  return css(["position:relative;border-radius:2px;width:100%;height:180px;user-select:none;cursor:crosshair;background-color:", ";"], color);
 });
 var WhiteGradient = styled.div.attrs({
   className: generateClassNames(baseClassName, 'white-gradient')
@@ -73,7 +73,7 @@ var BarWrapper = styled.div.attrs({
   className: generateClassNames(baseClassName, 'bar-wrapper')
 }).withConfig({
   componentId: "sc-qj4xo5-6"
-})(["margin-top:8px;position:relative;width:186px;height:12px;"]);
+})(["margin-top:8px;position:relative;width:100%;height:12px;"]);
 var Bar = styled.table.attrs({
   className: generateClassNames(baseClassName, 'bar')
 }).withConfig({

@@ -1150,6 +1150,7 @@
         }
       }
     }
+
     .respark_ModalTitle-Icon {
       svg {
         height: 30px;
@@ -1980,4 +1981,33 @@
 .konvajs-content {
   //4-nov
   height: calc(100vh - 60px) !important;
+}
+.respark_ColorPicker-action {
+  gap: 7px;
+  .respark_ColorPicker-icon {
+    @include background-btn;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+    padding: 5px;
+    svg {
+      width: 100%;
+      height: 100%;
+      color: var(--theme-bg);
+    }
+  }
+  .respark_Input-root,
+  .respark_Select-root {
+    @include background-btn;
+    height: 30px;
+
+    overflow: hidden;
+    input {
+      background: unset;
+      border: unset;
+    }
+  }
 }
