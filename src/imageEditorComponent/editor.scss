@@ -2003,11 +2003,19 @@
   .respark_Select-root {
     @include background-btn;
     height: 30px;
-
+    font-size: 13px;
+    font-family: Poppins !important;
     overflow: hidden;
     input {
       background: unset;
       border: unset;
+      font-size: 13px;
+      font-family: "Poppins";
     }
+  }
+}
+.respark_filters-item-preview {
+  .konvajs-content {
+    height: 45px !important;
   }
 }

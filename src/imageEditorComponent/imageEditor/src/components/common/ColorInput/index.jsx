@@ -35,6 +35,7 @@ const ColorInput = ({ position = 'top', onChange, color }) => {
   };
 
   const changeColor = (_newColorHex, rgba, newPinnedColors) => {
+    // rgba = 'radial-gradient(ellipse, rgba(238,27,27,0.4) 0%, #000000 100%)';
     setCurrentColor(rgba);
     onChange(rgba);
     newPinnedColors && changePinnedColors(newPinnedColors);
