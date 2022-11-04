@@ -41,8 +41,7 @@ const AnnotationOptions = ({
     config: { useCloudimage },
     t,
   } = useStore();
-  const { currentId, setCurrentId } = useContext(EditorContext);
-  console.log(currentId)
+  const { setCurrentId } = useContext(EditorContext);
   const options = useMemo(
     () => [
       ...morePoppableOptionsPrepended,

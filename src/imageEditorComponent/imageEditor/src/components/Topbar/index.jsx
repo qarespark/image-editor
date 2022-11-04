@@ -17,6 +17,7 @@ import {
   StyledHistoryButtonsWrapper,
 } from './Topbar.styled';
 import BackButton from './BackButton';
+import SaveButtonCustom from './SaveButtonCustom';
 
 const Topbar = () => {
   const {
@@ -33,7 +34,6 @@ const Topbar = () => {
             <CanvasZooming />
           </>
         )}
-
       </StyledFlexCenterAlignedContainer>
 
       <StyledHistoryButtonsWrapper className="respark_topbar-center-options respark_topbar-history-buttons">
@@ -43,6 +43,10 @@ const Topbar = () => {
       </StyledHistoryButtonsWrapper>
 
       <ImageDimensionsAndDisplayToggle />
+
+      <StyledFlexCenterAlignedContainer className="respark_topbar-center-options save-btn">
+        <SaveButtonCustom />
+      </StyledFlexCenterAlignedContainer>
 
       <StyledFlexCenterAlignedContainer className="respark_topbar-center-options close-btn">
         {showBackButton ? <BackButton /> : <CloseButton />}

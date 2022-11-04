@@ -9,7 +9,7 @@ import { StyledSpacedOptionFields } from '../../../../components/common/Annotati
 import Slider from '../../../../components/common/Slider';
 
 const MIN_VALUE = 0;
-const MAX_VALUE = 10;
+const MAX_VALUE = 15;
 const SLIDER_STEP = 1;
 
 const TextSpacingsFields = ({
@@ -41,9 +41,9 @@ const TextSpacingsFields = ({
         isActive={Boolean(lineHeight)}
         onChange={(val) => updateValue('lineHeight', val)}
         value={lineHeight}
-        step={SLIDER_STEP}
-        min={MIN_VALUE}
-        max={MAX_VALUE}
+        step={0.2}
+        min={0}
+        max={4}
       />
     </StyledSpacedOptionFields>
   );

@@ -106,12 +106,12 @@ const defaultConfig: any = {
     group: '',
     from: '',
     baseURL: '',
+    log: "https://pcs-s3.s3.ap-south-1.amazonaws.com/3/logo/2022-09-15T14%3A57%3A13.639213_slider.png",
 }
 
 function Editor({ props }: any = {}) {
     const [showEditor, setShowEditor] = useState(true);
     const [bgImage, setBgImage] = useState<any>(initialBg);
-    const [showSaveActionModal, setShowSaveActionModal] = useState(false);
     const [resparkTemplates, setResparkTemplates] = useState<any[]>([]);
     const [templatesList, setTemplatesList] = useState<any[]>([]);
     const [activeTemplate, setActiveTemplate] = useState<any>(null);
@@ -120,14 +120,13 @@ function Editor({ props }: any = {}) {
     const [oldBgImage, setOldBgImage] = useState(initialBg);
     const [savedTemplatesHeight, setSavedTemplatesListHeight] = useState('50vh');
     // const [bgImages, setBgImages] = useState<any>(bgImagesList); //used for collecting base64 urls of images
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const bgImageModalRef = useRef<any>(null);
     const testStyleModalRef = useRef<any>(null);
     const bgModalRef = useRef<any>(null);
     const editorWrapRef = useRef<any>(null);
     const cropperRef = useRef<any>(null);
-    const [userAcceptedTemplateChangeMessage, setUserAcceptedTemplateChangeMessage] = useState(false)
-    const [showTemplateChangeConfirmation, setShowTemplateChangeConfirmation] = useState({ active: false, template: {} });
+    const [showTemplateChangeConfirmation, setShowTemplateChangeConfirmation] = useState({ active: false, template: {}, userAgreeToChange: false });
+    const [showTemplateDeleteConfirmation, setShowTemplateDeleteConfirmation] = useState<any>({ active: false, template: {}, userAgreeToChange: false, templateIndex: null });
     const uploadImgsInput = useRef();
     const [activeBgImgCategory, setActiveBgImgCategory] = useState('All');
     const [showAddTextModal, setShowAddTextModal] = useState(false);
@@ -135,7 +134,8 @@ function Editor({ props }: any = {}) {
     const editedImage = useRef<(imageFileInfo?: object, pixelRatio?: boolean, keepLoadingSpinnerShown?: boolean) => { imageData: object; designState: object; hideLoadingSpinner: (...args: any[]) => any }>();
     const [showCropper, setShowCropper] = useState({ active: false, img: '' });
     const [parentConfigMesg, setParentConfigMesg] = useState(defaultConfig);
-    const { currentTab, currentId, setCurrentId } = useContext(EditorContext);
+    const { currentTab, currentId, currentAction, setCurrentAction, setActiveTemplateContext, setCurrentId } = useContext(EditorContext);
+    const [waterMarks, setWaterMarks] = useState('');
 
     // const { dispatch, tabId }: any = useStore();
     useEffect(() => {
@@ -149,6 +149,11 @@ function Editor({ props }: any = {}) {
             setshowTemplates(true);
         }
     }, [currentTab])
+
+    useEffect(() => {
+        if (currentAction?.type == 'save' && currentAction?.action) handleSaveButtonClick(currentAction?.action);
+    }, [currentAction])
+
 
     useEffect(() => {
         if (currentId == TOOLS.TEXT) {
@@ -181,7 +186,8 @@ function Editor({ props }: any = {}) {
                 group: 'both',
                 from: 'Slider',
                 title: "Update slider banner!",
-                baseURL: "https://qa.respark.in:8082/pcs-catalog/v1/template"
+                baseURL: "https://qa.respark.in:8082/pcs-catalog/v1/template",
+                logo: defaultConfig.logo,
             });
         }
     }, [])
@@ -220,12 +226,42 @@ function Editor({ props }: any = {}) {
                 setEditorConfig(config)
             }, 1000);
             setActiveTemplate({ ...getEmptyTemplateObj() });
+            setActiveTemplateContext({ ...getEmptyTemplateObj() });
             getTemplatesData(config)
             axios.get(`${config.baseURL}s/0/0/${config.type}`).then((templates: any) => {
                 setResparkTemplates(templates.data.reverse())
             }).catch((e) => { });
         }
     }, [parentConfigMesg])
+
+    function convert(oldImag: any, callback: any) {
+        var img = new Image();
+        img.onload = function () {
+            callback(img)
+        }
+        img.setAttribute('crossorigin', 'anonymous');
+        img.src = oldImag.src;
+    }
+    function getBase64Image(img: any, callback: any) {
+        convert(img, function (newImg: any) {
+            var canvas = document.createElement("canvas");
+            canvas.width = newImg.width;
+            canvas.height = newImg.height;
+            var ctx: any = canvas.getContext("2d");
+            ctx.drawImage(newImg, 0, 0);
+            var base64 = canvas.toDataURL("image/png");
+            callback(base64)
+        })
+    }
+    useEffect(() => {
+        if (!waterMarks && document.getElementById("client-logo") && editorConfig.type) {
+            if (document.getElementById("client-logo")) {
+                getBase64Image(document.getElementById("client-logo"), function (base64: any) {
+                    setWaterMarks(base64)
+                });
+            }
+        }
+    }, [editorConfig])
 
     const getTemplatesData = (config: any) => {
         if (config.tenantId != 0) {
@@ -261,27 +297,26 @@ function Editor({ props }: any = {}) {
             "type": editorConfig.type
         }
     }
-    const closeSaveModal = () => {
-        setAnchorEl(null);
-        setShowSaveActionModal(false);
-    }
 
     const onSelectTemplate = (template: any) => {
         if (template) {
-            if (!activeTemplate.id || userAcceptedTemplateChangeMessage || activeTemplate.id == template.id) {
+            if (!activeTemplate.id || showTemplateChangeConfirmation.userAgreeToChange || activeTemplate.id == template.id) {
+                setActiveTemplateContext({ ...template })
                 setActiveTemplate({ ...template });
             } else {
-                setShowTemplateChangeConfirmation({ template, active: true });
+                setShowTemplateChangeConfirmation({ ...showTemplateChangeConfirmation, template, active: true });
             }
         } else {
             setActiveTemplate({ ...getEmptyTemplateObj() });
+            setActiveTemplateContext({ ...getEmptyTemplateObj() })
             setBgImage(initialBg);
         }
     }
 
     const replaceTemplate = () => {
+        setActiveTemplateContext(showTemplateChangeConfirmation.template);
         setActiveTemplate(showTemplateChangeConfirmation.template);
-        setShowTemplateChangeConfirmation({ active: false, template: {} })
+        setShowTemplateChangeConfirmation({ ...showTemplateChangeConfirmation, active: false, template: {} })
     }
 
     const onChangeBg = (bgImage: any) => {
@@ -290,19 +325,19 @@ function Editor({ props }: any = {}) {
         // setShowBgImages(false)
     }
 
-    const handleSaveClick = (event: any) => {
+    const handleSaveButtonClick = (event: any) => {
         if (event) {
             if (event == 'add') {
-                addNewTemplate(); closeSaveModal();
+                addNewTemplate();
             } else if (event == 'update') {
-                updateTemplate(); closeSaveModal();
+                updateTemplate();
             } else if (event == 'download') {
-                downloadTemplate(); closeSaveModal();
-            } else {
-                setAnchorEl(event.currentTarget);
-                setShowSaveActionModal(true);
+                downloadTemplate();
+            } else if (event == 'submit') {
+                onSubmitImage();
             }
-        } else closeSaveModal();
+            setCurrentAction(null);
+        }
     };
 
     const addNewTemplate = () => {
@@ -314,7 +349,8 @@ function Editor({ props }: any = {}) {
                 template.designState = { ...designState };
                 template.image = imageData.imageBase64;
                 axios.post(`${editorConfig.baseURL}s`, template).then((response: any) => {
-                    setActiveTemplate({ ...response.data })
+                    setActiveTemplateContext({ ...response.data });
+                    setActiveTemplate({ ...response.data });
                     if (editorConfig.tenantId == 0) {
                         const resparkTemplatesCopy: any = JSON.parse(JSON.stringify(resparkTemplates));
                         resparkTemplatesCopy.unshift(response.data);
@@ -338,6 +374,7 @@ function Editor({ props }: any = {}) {
                 template.designState = { ...designState };
                 template.image = imageData.imageBase64;
                 axios.post(`${editorConfig.baseURL}s`, template).then((response: any) => {
+                    setActiveTemplateContext({ ...response.data });
                     setActiveTemplate(response.data);
                     if (editorConfig.tenantId == 0) {
                         let tIndex = resparkTemplates.findIndex((t: any) => t.id == activeTemplate.id);
@@ -356,19 +393,23 @@ function Editor({ props }: any = {}) {
         })
     }
 
-    const deleteCustomerTemplate = (event: any, template: any, templateIndex: number) => {
-        axios.delete(`${editorConfig.baseURL}/${template.id}`).then((response: any) => {
+    const onDeleteTemplateClick = (event: any, template: any, templateIndex: number) => {
+        setShowTemplateDeleteConfirmation({ active: true, template, templateIndex });
+        event.stopPropagation()
+    }
+    const deleteCustomerTemplate = () => {
+        axios.delete(`${editorConfig.baseURL}/${showTemplateDeleteConfirmation.template.id}`).then((response: any) => {
             if (editorConfig.tenantId == 0) {
                 const resparkTemplatesCopy: any = JSON.parse(JSON.stringify(resparkTemplates));
-                resparkTemplatesCopy.splice(templateIndex, 1);
+                resparkTemplatesCopy.splice(showTemplateDeleteConfirmation.templateIndex, 1);
                 setResparkTemplates(resparkTemplatesCopy);
             } else {
                 const templatesListCopy: any = JSON.parse(JSON.stringify(templatesList));
-                templatesListCopy.splice(templateIndex, 1);
+                templatesListCopy.splice(showTemplateDeleteConfirmation.templateIndex, 1);
                 setTemplatesList(templatesListCopy);
             }
+            setShowTemplateDeleteConfirmation({ active: false, template: null, templateIndex: null });
         });
-        event.stopPropagation();
     }
 
     const downloadTemplate = () => {
@@ -380,7 +421,6 @@ function Editor({ props }: any = {}) {
                 a.download = "banner.png"; //File name Here
                 a.click(); //Downloaded file
             }
-            setShowSaveActionModal(false)
             console.log("Success", "Image downloaded successfully")
         })
     }
@@ -389,7 +429,6 @@ function Editor({ props }: any = {}) {
         setOldBgImage(bgImage)
         if (from == 'self') uploadNewBgFromLocal();
         else if (from == 'gallery') setShowBgImages(true);
-        setAnchorEl(null);
     };
 
     const uploadNewBgFromLocal = () => {
@@ -557,6 +596,7 @@ function Editor({ props }: any = {}) {
                 designState.annotations = { ...designState.annotations, ...textEle }
                 template.designState = { ...designState };
                 template.image = imageData.imageBase64;
+                setActiveTemplateContext(template);
                 setActiveTemplate(template);
                 setShowEditor(false);
                 setCurrentId('');
@@ -588,7 +628,6 @@ function Editor({ props }: any = {}) {
                             if (window.location.ancestorOrigins.length) {
                                 window.parent.postMessage({ type: 'Editor Closed', data: res.data }, window.location.ancestorOrigins[0]);
                             }
-                            setShowSaveActionModal(false);
                             console.log(res.data)
                         });
                     })
@@ -612,10 +651,14 @@ function Editor({ props }: any = {}) {
                     </div>
                 </div>
                 <div className="templates-list">
-                    {resparkTemplates.map((template: any) => {
+                    {resparkTemplates.map((template: any, templateIndex: number) => {
                         return <React.Fragment key={Math.random()}>
-                            {template.tenantId == 0 && <div className="template-details" onClick={() => onSelectTemplate(template)}>
-                                <div className="icon-wrap"><FaCrown /></div>
+                            {template.tenantId == 0 && <div className="template-details users-template" onClick={() => onSelectTemplate(template)}>
+                                {editorConfig.tenantId == 0 ? <div className="info-icon-wrap" onClick={(e) => onDeleteTemplateClick(e, template, templateIndex)}>
+                                    <div className="info">Delete template</div>
+                                    <div className="icon-wrap" ><AiOutlineCloseCircle /></div>
+                                </div> : <div className="icon-wrap"><FaCrown /></div>}
+                                <div className="template-id">{template.id}</div>
                                 <img src={template?.image} />
                             </div>}
                         </React.Fragment>
@@ -628,13 +671,14 @@ function Editor({ props }: any = {}) {
                         </div>
                     </div>
                     <div className="templates-list">
-                        {templatesList.map((template: any, i: number) => {
+                        {templatesList.map((template: any, templateIndex: number) => {
                             return <React.Fragment key={Math.random()}>
                                 <div className="template-details users-template" onClick={() => onSelectTemplate(template)}>
-                                    <div className="info-icon-wrap" onClick={(e) => deleteCustomerTemplate(e, template, i)}>
+                                    <div className="info-icon-wrap" onClick={(e) => onDeleteTemplateClick(e, template, templateIndex)}>
                                         <div className="info">Delete template</div>
                                         <div className="icon-wrap" ><AiOutlineCloseCircle /></div>
                                     </div>
+                                    <div className="template-id">{template.id}</div>
                                     <img src={template?.image} />
                                 </div>
                             </React.Fragment>
@@ -693,12 +737,14 @@ function Editor({ props }: any = {}) {
             </div>
         </div>
     }
+
     return (
         <>
             <div className={`editor-component-wrap  ${showBgImages ? "modal-opened" : ""}`}>
                 <div className="editor-container ">
                     {editorConfig.type ? <>
                         <div className="page-heading">Respark Image Editor
+                            <img id="client-logo" onClick={() => setShowEditor(true)} className='client-logo' src={editorConfig.logo || 'https://pcs-s3.s3.ap-south-1.amazonaws.com/3/logo/2022-09-15T14%3A57%3A13.639213_slider.png'} />
                             {editorConfig.title && <>- {editorConfig.title}</>}
                             <span> Width:{editorConfig.width}, Height:{editorConfig.height}, Ratio:{editorConfig.aspectRatio}</span>
                             <div className="get-instance" onClick={getEditorInstanceInConsole}>Get editor instance</div>
@@ -722,7 +768,7 @@ function Editor({ props }: any = {}) {
                                 <div className='editor-root' ref={editorWrapRef}>
                                     {showTemplates && RenderTemplatesList()}
                                     {showBgImages && renderBackgroundsList()}
-                                    <div className="actions-wrap">
+                                    {/* <div className="actions-wrap">
                                         <div className='btn-wrap'>
                                             <div className='btn save-btn' id="save-btn" onClick={handleSaveClick}>
                                                 <div className="text">Save Image</div>
@@ -743,22 +789,22 @@ function Editor({ props }: any = {}) {
                                                     <div className="icon"><ImFilePicture /></div>
                                                     <div className="text">Update selected template</div>
                                                 </MenuItem>}
-                                                <MenuItem id="download" className='menu-item' onClick={() => onSubmitImage()}>
+                                                {editorConfig.tenantId != 0 && <MenuItem id="download" className='menu-item' onClick={() => onSubmitImage()}>
                                                     <div className="icon"><FcImageFile /></div>
                                                     <div className="text">Submit Banner Image</div>
-                                                </MenuItem>
+                                                </MenuItem>}
                                                 <MenuItem id="download" className='menu-item' onClick={() => handleSaveClick('download')}>
                                                     <div className="icon"><GoDesktopDownload /></div>
                                                     <div className="text">Download</div>
                                                 </MenuItem>
                                             </Menu>
                                         </div>
-                                    </div>
+                                    </div> */}
                                     {showEditor && (
                                         <ImageEditor
                                             source={bgImage}
                                             onSave={(editedImageObject, designState) => {
-                                                setShowSaveActionModal(true);
+                                                // setCurrentAction({type:'',action:''});
                                             }}
                                             loadableDesignState={activeTemplate.designState}
                                             onBeforeSave={() => false}
@@ -799,8 +845,8 @@ function Editor({ props }: any = {}) {
                                                 fontStyle: 'normal',
                                             }}
                                             Crop={{ noPresets: true }}
-                                            Watermark={{ gallery: [...waterMarks] }}
-                                            tabsIds={[TABS.TEMPLATE, TABS.BACKGROUND, TABS.ANNOTATE, TABS.FILTERS, TABS.FINETUNE, TABS.WATERMARK, TABS.ADJUST]} //in case of new image add TABS.RESIZE
+                                            Watermark={waterMarks ? { gallery: [waterMarks] } : { gallery: [] }}
+                                            tabsIds={[TABS.TEMPLATE, TABS.BACKGROUND, TABS.ANNOTATE, TABS.FILTERS, TABS.WATERMARK, TABS.FINETUNE, TABS.WATERMARK, TABS.ADJUST]} //in case of new image add TABS.RESIZE
                                             defaultTabId={currentTab}
                                             defaultToolId={TOOLS.TEXT}
                                         />
@@ -848,19 +894,35 @@ function Editor({ props }: any = {}) {
                             open={showTemplateChangeConfirmation.active ? true : false}
                         >
                             <div className="backdrop-modal-content d-f-c " style={{ height: '300px' }}>
-                                <div className="modal-close" onClick={() => {
-                                    setShowTemplateChangeConfirmation({ active: false, template: {} });
-                                    setUserAcceptedTemplateChangeMessage(false);
-                                }}><AiOutlineCloseCircle /></div>
+                                <div className="modal-close" onClick={() => setShowTemplateChangeConfirmation({ active: false, template: {}, userAgreeToChange: false })}><AiOutlineCloseCircle /></div>
                                 <div className="heading">Change template</div>
                                 <div className="modal-containt">
-                                    <div className={`message ${userAcceptedTemplateChangeMessage ? " active" : ""}`} onClick={() => setUserAcceptedTemplateChangeMessage(!userAcceptedTemplateChangeMessage)}>
+                                    <div className={`message ${showTemplateChangeConfirmation.userAgreeToChange ? " active" : ""}`} onClick={() => setShowTemplateChangeConfirmation({ ...showTemplateChangeConfirmation, userAgreeToChange: !showTemplateChangeConfirmation.userAgreeToChange })}>
                                         <div className={`checkbox`}></div>
                                         Dont show again
                                     </div>
                                     <div className="warning-msg">Please make sure that all current template changes will reverted and this action cannot be undo.</div>
                                     <div className="btn-wrap">
                                         <div className="btn" onClick={replaceTemplate}>Replace current template</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </Backdrop>
+                        <Backdrop
+                            className="backdrop-modal-wrapper confirmation-modal"
+                            open={showTemplateDeleteConfirmation.active ? true : false}
+                        >
+                            <div className="backdrop-modal-content d-f-c " style={{ height: '280px' }}>
+                                <div className="modal-close" onClick={() => setShowTemplateDeleteConfirmation({ active: false, template: {}, userAgreeToChange: false, templateIndex: null })}><AiOutlineCloseCircle /></div>
+                                <div className="heading">Delete template</div>
+                                <div className="modal-containt">
+                                    <div className={`message ${showTemplateDeleteConfirmation.userAgreeToChange ? " active" : ""}`} onClick={() => setShowTemplateDeleteConfirmation({ ...showTemplateDeleteConfirmation, userAgreeToChange: !showTemplateDeleteConfirmation.userAgreeToChange })}>
+                                        <div className={`checkbox`}></div>
+                                        Dont show again
+                                    </div>
+                                    <div className="warning-msg">Please make sure that this action cannot be undo.</div>
+                                    <div className="btn-wrap">
+                                        <div className="btn" onClick={deleteCustomerTemplate}>Delete current template</div>
                                     </div>
                                 </div>
                             </div>

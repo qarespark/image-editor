@@ -166,6 +166,14 @@
       z-index: 6;
       background: var(--primary-bg-color);
       height: 60px;
+      .client-logo {
+        width: auto;
+        height: 60px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 3px;
+      }
       span {
         font-size: 12px;
         color: gray;
@@ -360,6 +368,8 @@
         display: flex;
         justify-content: flex-start;
         align-items: flex-start;
+        max-width: 400px; //4-nov
+
         .images-list-wrap {
           width: 100%;
           display: flex;
@@ -471,6 +481,15 @@
               width: 100%;
               // width: 100%;
               // height: 160px;
+              .template-id {
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding: 10px;
+                color: var(--secondary-text-color);
+                background-color: var(--theme-bg);
+                display: none;
+              }
               .icon-wrap {
                 position: absolute;
                 top: 10px;
@@ -822,6 +841,7 @@
                 display: flex;
                 justify-content: flex-start;
                 align-items: flex-start;
+                max-width: 500px; //4-nov
                 .respark_tools-bar-wrapper {
                   width: 100%;
                   padding: 0;
@@ -907,13 +927,15 @@
               }
               .top-bar-canvas-wrap {
                 display: flex;
-                justify-content: center;
+                justify-content: flex-start;
                 align-items: center;
                 flex-direction: column;
                 width: 1020px;
                 height: calc(100vh - 76px);
                 position: relative;
                 top: 10px;
+                padding-top: 65px;
+
                 .respark_topbar {
                   overflow: unset;
                   background: linear-gradient(
@@ -1007,7 +1029,6 @@
                     }
                     &.close-btn {
                       padding: 0 5px;
-                      margin-left: 127px;
                       button {
                         padding: 15px 14px 15px 10px;
                       }
@@ -1018,6 +1039,12 @@
                       svg {
                         width: 100%;
                         height: 100%;
+                      }
+                    }
+                    &.save-btn {
+                      padding: unset;
+                      .btn {
+                        @include background-btn;
                       }
                     }
                     &.zoom {
@@ -1046,7 +1073,8 @@
             .respark_editor-content {
               border-radius: 11px;
               width: 1015px;
-              max-height: calc(100vh - 60px);
+              // max-height: calc(100vh - 60px);
+              max-height: 670px; //4-nov
             }
           }
           .actions-wrap {
@@ -1568,7 +1596,6 @@
           .img-wrap {
             margin: 7px;
             width: calc(100% / 2 - 15px);
-            height: 100px;
             cursor: pointer;
             border-radius: 6px;
             position: relative;
@@ -1580,12 +1607,9 @@
               transform: scale(1.04);
             }
             img {
-              // border-radius: 5px;
-              // width: 100%;
-              // height: 100%;
               width: 100%;
               border-radius: 4px;
-              height: 100%;
+              // height: 100%;
               border: 1px solid rgb(203 211 218 / 56%);
             }
             &.active {
@@ -1660,6 +1684,9 @@
       left: 50%;
       transform: translateX(-50%);
       padding: 20px 15px;
+      .modal-close {
+        left: unset;
+      }
       .heading {
         padding: 5px 15px 0;
       }
@@ -1671,7 +1698,7 @@
           align-items: center;
           padding: 10px 0;
           font-size: 14px;
-          color: var(--primary-bg-color);
+          color: #1f2638;
           cursor: pointer;
           .checkbox {
             position: relative;
@@ -1949,4 +1976,8 @@
 }
 .primary-btn {
   @include background-btn;
+}
+.konvajs-content {
+  //4-nov
+  height: calc(100vh - 60px) !important;
 }

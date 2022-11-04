@@ -43,13 +43,8 @@ const CanvasZooming = () => {
   };
 
   const fitCanvas = () => {
-    const usedAsOrgDimens =
-      (resize.width && resize.height && resize) ||
-      (crop.width && crop.height && crop) ||
-      shownImageDimensions;
-    const fitCanvasFactor = getZoomFitFactor(
-      (crop.width && crop.height && crop) || shownImageDimensions,
-      usedAsOrgDimens,
+    const usedAsOrgDimens = (resize.width && resize.height && resize) || (crop.width && crop.height && crop) || shownImageDimensions;
+    const fitCanvasFactor = getZoomFitFactor((crop.width && crop.height && crop) || shownImageDimensions, usedAsOrgDimens,
     );
     saveZoom(fitCanvasFactor || DEFAULT_ZOOM_FACTOR);
   };

@@ -2,14 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Text from '../../../element/icons/text';
 import UploadOutline from '../../../element/icons/upload-outline';
-
-
-import {
-  SELECT_ANNOTATION,
-  SET_ANNOTATION,
-  SET_FEEDBACK,
-  CLEAR_ANNOTATIONS_SELECTIONS,
-} from '../../../actions';
+import { SELECT_ANNOTATION, SET_ANNOTATION, SET_FEEDBACK, CLEAR_ANNOTATIONS_SELECTIONS } from '../../../actions';
 import ButtonWithMenu from '../../../components/common/ButtonWithMenu';
 import TextControls from '../../../components/tools/Text/TextOptions/TextControls';
 import ImageControls from '../../../components/tools/Image/ImageControls';
