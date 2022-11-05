@@ -148,7 +148,7 @@ function Editor({ props }: any = {}) {
             setShowBgImages(false);
             setshowTemplates(true);
         }
-    }, [currentTab])
+    }, [currentTab, currentId])
 
     useEffect(() => {
         if (currentAction?.type == 'save' && currentAction?.action) handleSaveButtonClick(currentAction?.action);
@@ -161,6 +161,9 @@ function Editor({ props }: any = {}) {
         }
     }, [currentId])
 
+    useEffect(() => {
+        if (!showAddTextModal) setCurrentId('');
+    }, [showAddTextModal])
 
     useEffect(() => {
         if (window.location.ancestorOrigins.length) {//this means editor opens in iframe
@@ -182,7 +185,7 @@ function Editor({ props }: any = {}) {
                 type: 'small_banner',
                 height: 284,
                 width: 413,
-                aspectRatio: 1.454,
+                aspectRatio: 1.4,
                 group: 'both',
                 from: 'Slider',
                 title: "Update slider banner!",

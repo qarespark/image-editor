@@ -53,8 +53,7 @@ export const TOOLS_ITEMS = {
   [TOOLS_IDS.HSV]: {
     id: TOOLS_IDS.HSV,
     Item: HSV,
-    ItemOptions: HSVOptions,
-    hideFn: ({ useCloudimage }) => useCloudimage,
+    ItemOptions: HSVOptions
   },
   [TOOLS_IDS.BLUR]: {
     id: TOOLS_IDS.BLUR,
@@ -64,8 +63,7 @@ export const TOOLS_ITEMS = {
   [TOOLS_IDS.WARMTH]: {
     id: TOOLS_IDS.WARMTH,
     Item: Warmth,
-    ItemOptions: WarmthOptions,
-    hideFn: ({ useCloudimage }) => useCloudimage,
+    ItemOptions: WarmthOptions
   },
   [TOOLS_IDS.FILTERS]: {
     id: TOOLS_IDS.FILTERS,

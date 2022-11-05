@@ -74,7 +74,7 @@ const NodesTransformer = () => {
       ignoreStroke={false}
       anchorStroke={theme.palette['accent-primary']}
       anchorFill={theme.palette['access-primary']}
-      anchorStrokeWidth={2}
+      anchorStrokeWidth={8}
       borderStroke={theme.palette['accent-primary']}
       borderStrokeWidth={2}
       borderDash={[4]}

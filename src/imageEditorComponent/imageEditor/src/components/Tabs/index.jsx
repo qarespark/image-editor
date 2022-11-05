@@ -8,13 +8,8 @@ import { StyledTabs } from './Tabs.styled';
 import { EditorContext } from '../../../../index'
 
 const Tabs = () => {
-  const {
-    t,
-    dispatch,
-    tabId = null,
-    config: { tabsIds, defaultTabId, useCloudimage },
-  } = useStore();
-  const { setCurrentTab } = useContext(EditorContext);
+  const { t, dispatch, tabId = null, config: { tabsIds, defaultTabId, useCloudimage } } = useStore();
+  const { setCurrentTab, currentTab } = useContext(EditorContext);
   const currentTabId = tabId || defaultTabId;
 
   const chosenTabs = useMemo(() => {

@@ -8,6 +8,7 @@ import selectTab, { SELECT_TAB } from './selectTab';
 import undo, { UNDO } from './undo';
 import setFinetune, { SET_FINETUNE } from './setFinetune';
 import setAnnotation, { SET_ANNOTATION } from './setAnnotation';
+import updateZIndexAnnotations, { UPDATE_ZINDEX_ANNOTATIONS } from './updateZIndexAnnotations';
 import changePointerIcon, { CHANGE_POINTER_ICON } from './changePointerIcon';
 import selectAnnotation, { SELECT_ANNOTATION } from './selectAnnotation';
 import clearAnnotationsSelections, { CLEAR_ANNOTATIONS_SELECTIONS, } from './clearAnnotationsSelections';
@@ -48,6 +49,7 @@ export default {
   [ADD_FILTER]: addFilter,
   [SET_FINETUNE]: setFinetune,
   [SET_ANNOTATION]: setAnnotation,
+  [UPDATE_ZINDEX_ANNOTATIONS]: updateZIndexAnnotations,
   [SET_CROP]: setCrop,
   [CHANGE_ROTATION]: changeRotation,
   [TOGGLE_FLIP]: toggleFlip,

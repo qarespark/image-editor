@@ -823,12 +823,14 @@
               );
               height: calc(100vh - 60px);
               width: 105px;
+              z-index: 2;
               .respark_tabs {
                 background-color: transparent;
               }
             }
             .right-content {
               width: inherit;
+              z-index: 1;
               display: flex;
               justify-content: flex-start;
               align-items: flex-start;
