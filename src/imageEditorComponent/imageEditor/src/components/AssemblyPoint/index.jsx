@@ -12,9 +12,6 @@ import deepMerge from '../../utils/deepMerge';
 import { FontsFaces, OverrideDefaultStyles } from './globalStyles';
 
 const AssemblyPoint = (props) => {
-  useEffect(() => {
-    console.log('inside app', props)
-  }, [props])
 
   const { source } = props;
   if (

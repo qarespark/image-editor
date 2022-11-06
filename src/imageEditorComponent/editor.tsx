@@ -134,7 +134,7 @@ function Editor({ props }: any = {}) {
     const editedImage = useRef<(imageFileInfo?: object, pixelRatio?: boolean, keepLoadingSpinnerShown?: boolean) => { imageData: object; designState: object; hideLoadingSpinner: (...args: any[]) => any }>();
     const [showCropper, setShowCropper] = useState({ active: false, img: '' });
     const [parentConfigMesg, setParentConfigMesg] = useState(defaultConfig);
-    const { currentTab, currentId, currentAction, setCurrentAction, setActiveTemplateContext, setCurrentId } = useContext(EditorContext);
+    const { currentTab, currentId, currentAction, setCurrentAction, setActiveTemplateContext, setCurrentId, setEditorConfigContext } = useContext(EditorContext);
     const [waterMarks, setWaterMarks] = useState('');
 
     // const { dispatch, tabId }: any = useStore();
@@ -230,7 +230,9 @@ function Editor({ props }: any = {}) {
             }, 1000);
             setActiveTemplate({ ...getEmptyTemplateObj() });
             setActiveTemplateContext({ ...getEmptyTemplateObj() });
+            setBgImage(BACKGROUND['initial_bg'][config.type]);
             getTemplatesData(config)
+            setEditorConfigContext(config)
             axios.get(`${config.baseURL}s/0/0/${config.type}`).then((templates: any) => {
                 setResparkTemplates(templates.data.reverse())
             }).catch((e) => { });
