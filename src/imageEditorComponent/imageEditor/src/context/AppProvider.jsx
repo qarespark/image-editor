@@ -13,11 +13,7 @@ import getInitialAppState from './getInitialAppState';
 let isFieMounted = true;
 
 const AppProvider = ({ children, config = {} }) => {
-  const [state, _dispatch] = useAppReducer(
-    appReducer,
-    getInitialAppState(config),
-    config,
-  );
+  const [state, _dispatch] = useAppReducer(appReducer, getInitialAppState(config), config);
 
   useEffect(() => {
     isFieMounted = true;

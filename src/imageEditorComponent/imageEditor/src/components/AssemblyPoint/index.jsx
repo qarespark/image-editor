@@ -1,5 +1,5 @@
 
-import React, { memo } from 'react';
+import React, { memo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 // import ThemeProvider from '../../element/ui/theme';
 import ThemeProvider from '../../element/ui/theme';
@@ -12,13 +12,11 @@ import deepMerge from '../../utils/deepMerge';
 import { FontsFaces, OverrideDefaultStyles } from './globalStyles';
 
 const AssemblyPoint = (props) => {
-  const { img, source, useCloudimage, cloudimage } = props;
-  // TODO: Remove this property from here after PROD. release
-  if (img) {
-    throw new Error(
-      '`img` is renamed to `source` please consider renaming it from your configurations.',
-    );
-  }
+  useEffect(() => {
+    console.log('inside app', props)
+  }, [props])
+
+  const { source } = props;
   if (
     !source ||
     (typeof source !== 'string' && !(source instanceof HTMLImageElement))
@@ -27,14 +25,10 @@ const AssemblyPoint = (props) => {
       '`source` property is required either a string of image url or a HTMLImageElement for the image that will be edited.',
     );
   }
-  if (useCloudimage) {
-    if (cloudimage?.imageSealing?.enable && !cloudimage?.imageSealing?.salt) {
-      throw new Error(
-        '`salt` property of imageSealing object is required in cloudimage mode as long as `imageSealing` is enabled.',
-      );
-    }
-  }
 
+  const initialProps = {
+
+  }
   const defaultAndProvidedConfigMerged = deepMerge(defaultConfig, props);
 
   return (
