@@ -20,17 +20,17 @@ const ToolsBar = () => {
     selectionsIds = [],
     config: { defaultTabId, defaultToolId, useCloudimage },
   } = useStore();
-  const { currentId, currentTab, setCurrentId, setCurrentTab } = useContext(EditorContext);
-  const currentTabId = currentTab || tabId || defaultTabId;
+  const { setCurrentId, setCurrentTab } = useContext(EditorContext);
+  const currentTabId = tabId || defaultTabId;
   const currentToolId = toolId || defaultToolId || TABS_TOOLS[currentTabId]?.[0];
 
   useEffect(() => {
     setCurrentTab(tabId)
-  }, [currentTab, currentTabId, toolId, tabId])
+  }, [currentTabId, toolId, tabId])
 
   const tabTools = useMemo(
     () => TABS_TOOLS[currentTabId] || [],
-    [currentTabId, currentTab],
+    [currentTabId],
   );
 
   const selectTool = useCallback((newToolId) => {

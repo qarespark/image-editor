@@ -5,6 +5,8 @@ import reset, { RESET } from './reset';
 import setFeedback, { SET_FEEDBACK } from './setFeedback';
 import showLoader, { SHOW_LOADER } from './showLoader';
 import selectTab, { SELECT_TAB } from './selectTab';
+import reloadCanvas, { RELOAD_CANVAS } from './reloadCanvas';
+import setActiveTemplate, { SET_ACTIVE_TEMPLATE } from './setActiveTemplate';
 import undo, { UNDO } from './undo';
 import setFinetune, { SET_FINETUNE } from './setFinetune';
 import setAnnotation, { SET_ANNOTATION } from './setAnnotation';
@@ -62,6 +64,8 @@ export default {
   [RESET]: reset,
   [SET_SAVED]: setSaved,
   [UPDATE_STATE]: updateState,
+  [RELOAD_CANVAS]: reloadCanvas,
+  [SET_ACTIVE_TEMPLATE]: setActiveTemplate
 };
 
 export {
@@ -96,4 +100,6 @@ export {
   RESET,
   SET_SAVED,
   UPDATE_STATE,
+  RELOAD_CANVAS,
+  SET_ACTIVE_TEMPLATE
 };

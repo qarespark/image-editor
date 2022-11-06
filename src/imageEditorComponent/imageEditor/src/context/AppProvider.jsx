@@ -2,8 +2,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '../element/ui/theme/hooks/use-theme';
-
-
 import { useAppReducer } from '../hooks';
 import { translate, updateTranslations } from '../utils/translator';
 import appReducer from './appReducer';

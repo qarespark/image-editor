@@ -14,6 +14,7 @@ import ImageCropper from './imageCropper';
 import Spinner from './imageEditor/src/components/common/Spinner';
 import EditorGuide from './editorGuide';
 import { EditorContext } from '.';
+import App from './imageEditor/src/components/App';
 
 function AiOutlineCloseCircle(props) {
     return <svg stroke="currentColor" fill="currentColor" strokeWidth="0" viewBox="0 0 1024 1024" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 0 0 203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"></path></svg>;
@@ -134,26 +135,12 @@ function Editor({ props }: any = {}) {
     const editedImage = useRef<(imageFileInfo?: object, pixelRatio?: boolean, keepLoadingSpinnerShown?: boolean) => { imageData: object; designState: object; hideLoadingSpinner: (...args: any[]) => any }>();
     const [showCropper, setShowCropper] = useState({ active: false, img: '' });
     const [parentConfigMesg, setParentConfigMesg] = useState(defaultConfig);
-    const { currentTab, currentId, currentAction, setCurrentAction, setActiveTemplateContext, setCurrentId } = useContext(EditorContext);
+    const { currentId, currentAction, setCurrentAction, setActiveTemplateContext, setCurrentId } = useContext(EditorContext);
     const [waterMarks, setWaterMarks] = useState('');
-
-    // const { dispatch, tabId }: any = useStore();
-    useEffect(() => {
-        setshowTemplates(false);
-        setShowBgImages(false);
-        setShowAddTextModal(false);
-        if (currentTab == TABS.BACKGROUND) {
-            setShowBgImages(true);
-        } else if (currentTab == TABS.TEMPLATE) {
-            setShowBgImages(false);
-            setshowTemplates(true);
-        }
-    }, [currentTab, currentId])
 
     useEffect(() => {
         if (currentAction?.type == 'save' && currentAction?.action) handleSaveButtonClick(currentAction?.action);
     }, [currentAction])
-
 
     useEffect(() => {
         if (currentId == TOOLS.TEXT) {
@@ -283,7 +270,7 @@ function Editor({ props }: any = {}) {
         }
         if (showEditor) {
             setShowEditor(false);
-            setTimeout(() => setShowEditor(true), 1)
+            setTimeout(() => setShowEditor(true))
         }
     }, [activeTemplate])
 
@@ -771,92 +758,10 @@ function Editor({ props }: any = {}) {
                                 <div className='editor-root' ref={editorWrapRef}>
                                     {showTemplates && RenderTemplatesList()}
                                     {showBgImages && renderBackgroundsList()}
-                                    {/* <div className="actions-wrap">
-                                        <div className='btn-wrap'>
-                                            <div className='btn save-btn' id="save-btn" onClick={handleSaveClick}>
-                                                <div className="text">Save Image</div>
-                                                <div className="icon"><VscSaveAll /></div>
-                                            </div>
-                                            <Menu
-                                                className='menu-item-wrap'
-                                                id="save-menu"
-                                                anchorEl={anchorEl}
-                                                open={showSaveActionModal}
-                                                onClose={() => handleSaveClick('')}
-                                                MenuListProps={{ 'aria-labelledby': 'save-btn' }}>
-                                                <MenuItem id="add" className='menu-item' onClick={() => handleSaveClick('add')}>
-                                                    <div className="icon"><RiImageAddFill /></div>
-                                                    <div className="text">Save as new template</div>
-                                                </MenuItem>
-                                                {(editorConfig.tenantId == 0 ? true : activeTemplate.tenantId != 0) && <MenuItem id="update" className='menu-item' onClick={() => handleSaveClick('update')}>
-                                                    <div className="icon"><ImFilePicture /></div>
-                                                    <div className="text">Update selected template</div>
-                                                </MenuItem>}
-                                                {editorConfig.tenantId != 0 && <MenuItem id="download" className='menu-item' onClick={() => onSubmitImage()}>
-                                                    <div className="icon"><FcImageFile /></div>
-                                                    <div className="text">Submit Banner Image</div>
-                                                </MenuItem>}
-                                                <MenuItem id="download" className='menu-item' onClick={() => handleSaveClick('download')}>
-                                                    <div className="icon"><GoDesktopDownload /></div>
-                                                    <div className="text">Download</div>
-                                                </MenuItem>
-                                            </Menu>
-                                        </div>
-                                    </div> */}
+
                                     {showEditor && (
-                                        <ImageEditor
-                                            source={bgImage}
-                                            onSave={(editedImageObject, designState) => {
-                                                // setCurrentAction({type:'',action:''});
-                                            }}
-                                            loadableDesignState={activeTemplate.designState}
-                                            onBeforeSave={() => false}
-                                            savingPixelRatio={1.2}
-                                            previewPixelRatio={window.devicePixelRatio}
-                                            onClose={onClose}
-                                            getCurrentImgDataFnRef={editedImage}
-                                            annotationsCommon={{
-                                                fill: 'black',
-                                            }}
-                                            Text={{
-                                                text: 'Add text here',
-                                                fontFamily: 'Poppins',
-                                                fonts: [
-                                                    'Poppins',
-                                                    { label: 'Mvboli', value: 'Mvboli' },
-                                                    { label: 'Blackjack', value: 'Blackjack' },
-                                                    { label: 'Domaine', value: 'Domaine' },
-                                                    { label: 'Gothic', value: 'Gothic' },
-                                                    { label: 'Claredon', value: 'Claredon' },
-                                                    { label: 'ArgoFlats', value: 'ArgoFlats' },
-                                                    { label: 'Antonio', value: 'Antonio' },
-                                                    { label: 'Bakery', value: 'bakery' },
-                                                    { label: 'Allura', value: 'Allura' },
-                                                    { label: 'Lhandw', value: 'Lhandw' },
-                                                    { label: 'Fontspring', value: 'Fontspring' },
-                                                    { label: 'Philosopher', value: 'Philosopher' },
-                                                    { label: 'Abuget', value: 'Abuget' },
-                                                    { label: 'Alexis Marie', value: 'Alexis Marie' },
-                                                    { label: 'Manta', value: 'Manta' },
-                                                    { label: 'Wayfarer', value: 'Wayfarer' },
-                                                    { label: 'Thunder', value: 'Thunder' },
-                                                ],
-                                                fontSize: 40,
-                                                letterSpacing: 0,
-                                                lineHeight: 1,
-                                                align: 'left',
-                                                fontStyle: 'normal',
-                                            }}
-                                            Crop={{ noPresets: true }}
-                                            Watermark={waterMarks ? { gallery: [waterMarks] } : { gallery: [] }}
-                                            tabsIds={[TABS.TEMPLATE, TABS.BACKGROUND, TABS.ANNOTATE, TABS.FILTERS, TABS.WATERMARK, TABS.FINETUNE, TABS.WATERMARK, TABS.ADJUST]} //in case of new image add TABS.RESIZE
-                                            defaultTabId={currentTab}
-                                            defaultToolId={TOOLS.TEXT}
-                                        />
+                                        <App />
                                     )}
-                                    {/* <div className="add-text-btn" onClick={() => setShowAddTextModal(true)}>
-                                        <div className="btn"><BsTextareaT />Text</div>
-                                    </div> */}
                                 </div>
                             </div>
                         </div>

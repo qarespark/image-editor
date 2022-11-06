@@ -1,5 +1,5 @@
 import React, { createContext, useMemo, useState } from 'react';
-import ImageEditor from './editor'
+import ImageEditor from '../imageEditorComponent/imageEditor/src'
 import { TABS } from './imageEditor/src';
 
 const EditorContext = createContext<any>({
