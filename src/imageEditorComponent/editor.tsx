@@ -806,7 +806,7 @@ function Editor({ props }: any = {}) {
                                                     { label: 'Domaine', value: 'Domaine' },
                                                     { label: 'Enchanting', value: 'Enchanting' },
                                                     { label: 'Fontspring', value: 'Fontspring' },
-                                                    // { label: 'Gothic', value: 'Gothic' },
+                                                    { label: 'Gothic', value: 'Gothic' },
                                                     { label: 'Lhandw', value: 'Lhandw' },
                                                     { label: 'Manta', value: 'Manta' },
                                                     { label: 'Mvboli', value: 'Mvboli' },

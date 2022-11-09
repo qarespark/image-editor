@@ -55,87 +55,99 @@
 
 @font-face {
   font-family: "Mvboli";
-  src: local("Mvboli"), url("../fonts/Mvboli.ttf") format("truetype");
+  src: local("Mvboli"), url("../../public/fonts/Mvboli.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Blackjack";
-  src: local("Blackjack"), url("../fonts/Blackjack.ttf") format("truetype");
+  src: local("Blackjack"),
+    url("../../public/fonts/Blackjack.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Domaine";
-  src: local("Domaine"), url("../fonts/Domaine.otf") format("truetype");
+  src: local("Domaine"),
+    url("../../public/fonts/Domaine.otf") format("truetype");
 }
 
-// @font-face {
-//   font-family: "Gothic";
-//   src: local("Gothic"), url("../fonts/Gothic.ttf") format("truetype");
-// }
+@font-face {
+  font-family: "Gothic";
+  src: local("Gothic"), url("../../public/fonts/Gothic.ttf") format("truetype");
+}
 
 @font-face {
   font-family: "Claredon";
-  src: local("Claredon"), url("../fonts/Claredon.ttf") format("truetype");
+  src: local("Claredon"),
+    url("../../public/fonts/Claredon.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "ArgoFlats";
-  src: local("ArgoFlats"), url("../fonts/ArgoFlats.ttf") format("truetype");
+  src: local("ArgoFlats"),
+    url("../../public/fonts/ArgoFlats.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Bakery";
-  src: local("bakery"), url("../fonts/Bakery.ttf") format("truetype");
+  src: local("bakery"), url("../../public/fonts/Bakery.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Enchanting";
-  src: local("Enchanting"), url("../fonts/Enchanting.ttf") format("truetype");
+  src: local("Enchanting"),
+    url("../../public/fonts/Enchanting.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Allura";
-  src: local("Allura"), url("../fonts/Allura.ttf") format("truetype");
+  src: local("Allura"), url("../../public/fonts/Allura.ttf") format("truetype");
 }
 @font-face {
   font-family: "Lhandw";
-  src: local("Lhandw"), url("../fonts/Lhandw.ttf") format("truetype");
+  src: local("Lhandw"), url("../../public/fonts/Lhandw.ttf") format("truetype");
 }
 @font-face {
   font-family: "Fontspring";
-  src: local("Fontspring"), url("../fonts/Fontspring.otf") format("truetype");
+  src: local("Fontspring"),
+    url("../../public/fonts/Fontspring.otf") format("truetype");
 }
 @font-face {
   font-family: "Philosopher";
-  src: local("Philosopher"), url("../fonts/Philosopher.ttf") format("truetype");
+  src: local("Philosopher"),
+    url("../../public/fonts/Philosopher.ttf") format("truetype");
 }
 @font-face {
   font-family: "Abuget";
-  src: local("Abuget"), url("../fonts/Abuget.ttf") format("truetype");
+  src: local("Abuget"), url("../../public/fonts/Abuget.ttf") format("truetype");
 }
 @font-face {
   font-family: "AlexisMarie";
-  src: local("AlexisMarie"), url("../fonts/AlexisMarie.ttf") format("truetype");
+  src: local("AlexisMarie"),
+    url("../../public/fonts/AlexisMarie.ttf") format("truetype");
 }
 @font-face {
   font-family: "Antonio";
-  src: local("Antonio"), url("../fonts/Antonio.ttf") format("truetype");
+  src: local("Antonio"),
+    url("../../public/fonts/Antonio.ttf") format("truetype");
 }
 @font-face {
   font-family: "Manta";
-  src: local("Manta"), url("../fonts/Manta.ttf") format("truetype");
+  src: local("Manta"), url("../../public/fonts/Manta.ttf") format("truetype");
 }
 @font-face {
   font-family: "Wayfarer";
-  src: local("Wayfarer"), url("../fonts/Wayfarer.otf") format("truetype");
+  src: local("Wayfarer"),
+    url("../../public/fonts/Wayfarer.otf") format("truetype");
 }
 @font-face {
   font-family: "Thunder";
-  src: local("Thunder"), url("../fonts/Thunder.ttf") format("truetype");
+  src: local("Thunder"),
+    url("../../public/fonts/Thunder.ttf") format("truetype");
 }
 @font-face {
   font-family: "Poppins";
-  src: local("Poppins"), url("../fonts/Poppins.ttf") format("truetype");
+  src: local("Poppins"),
+    url("../../public/fonts/Poppins.ttf") format("truetype");
 }
 .editor-component-wrap {
   display: flex;
