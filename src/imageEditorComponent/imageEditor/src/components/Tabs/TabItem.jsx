@@ -29,14 +29,14 @@ const TabItem = ({ id, label, Icon, isSelected, onClick }) => {
           {label}
         </StyledTabItemLabel>
       )}
-      {showGuide && <>
+      {/* {showGuide && <>
         {label == 'Adjust' && <div className="info"><div>Crop, rotate, flip image </div></div>}
         {label == 'Draw' && <div className="info"><div>Add text, image, shapes or draw using pen, change font size and style</div></div>}
         {label == 'Filters' && <div className="info"><div>Filter your background image</div></div>}
         {label == 'Finetune' && <div className="info"><div>Mange briteness, contrast, HSV, blur, warmth</div></div>}
         {label == 'Watermark' && <div className="info"><div>Add watermark to image</div></div>}
         {label == 'Resize' && <div className="info"><div>Resize in your dimensions</div></div>}
-      </>}
+      </>} */}
     </StyledTabItem>
   );
 };

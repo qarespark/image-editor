@@ -224,7 +224,7 @@ function Editor({ props }: any = {}) {
                     config.aspectRatio = Number(params.get('r'));
                 }
             }
-            console.log(config);
+            // console.log(config);
             setTimeout(() => {
                 setEditorConfig(config)
             }, 1000);
@@ -806,7 +806,7 @@ function Editor({ props }: any = {}) {
                                                     { label: 'Domaine', value: 'Domaine' },
                                                     { label: 'Enchanting', value: 'Enchanting' },
                                                     { label: 'Fontspring', value: 'Fontspring' },
-                                                    { label: 'Gothic', value: 'Gothic' },
+                                                    // { label: 'Gothic', value: 'Gothic' },
                                                     { label: 'Lhandw', value: 'Lhandw' },
                                                     { label: 'Manta', value: 'Manta' },
                                                     { label: 'Mvboli', value: 'Mvboli' },
