@@ -131,6 +131,7 @@ const TextControls = ({ text, saveText, children }) => {
               className="respark_text-font-family-item"
               key={fontFamily.value ?? fontFamily}
               value={fontFamily.value ?? fontFamily}
+              style={{ fontFamily: fontFamily.value ?? fontFamily }}
             >
               {fontFamily.label ?? fontFamily}
             </MenuItem>
