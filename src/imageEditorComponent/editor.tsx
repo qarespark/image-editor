@@ -233,7 +233,7 @@ function Editor({ props }: any = {}) {
             setBgImage(BACKGROUND['initial_bg'][config.type]);
             getTemplatesData(config)
             setEditorConfigContext(config)
-            axios.get(`${config.baseURL}s/0/0/${config.type}`).then((templates: any) => {
+            axios.get(`https://qa.respark.in:8082/pcs-catalog/v1/templates/0/0/${config.type}`).then((templates: any) => {
                 setResparkTemplates(templates.data.reverse())
             }).catch((e) => { });
         }
