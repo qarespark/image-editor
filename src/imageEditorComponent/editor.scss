@@ -70,7 +70,7 @@
 
 @font-face {
   font-family: "Gothic";
-  src: local("Gothic"), url("../fonts/Gothic.TTF") format("truetype");
+  src: local("Gothic"), url("../fonts/Gothic.ttf") format("truetype");
 }
 
 @font-face {
@@ -85,16 +85,21 @@
 
 @font-face {
   font-family: "Bakery";
-  src: local("bakery"), url("../fonts/bakery.ttf") format("truetype");
+  src: local("bakery"), url("../fonts/Bakery.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Enchanting";
+  src: local("Enchanting"), url("../fonts/Enchanting.ttf") format("truetype");
 }
 
 @font-face {
   font-family: "Allura";
-  src: local("Allura"), url("../fonts/Allura-Regular.ttf") format("truetype");
+  src: local("Allura"), url("../fonts/Allura.ttf") format("truetype");
 }
 @font-face {
   font-family: "Lhandw";
-  src: local("Lhandw"), url("../fonts/LHANDW.ttf") format("truetype");
+  src: local("Lhandw"), url("../fonts/Lhandw.ttf") format("truetype");
 }
 @font-face {
   font-family: "Fontspring";
@@ -102,22 +107,19 @@
 }
 @font-face {
   font-family: "Philosopher";
-  src: local("Philosopher"),
-    url("../fonts/Philosopher-Regular.ttf") format("truetype");
+  src: local("Philosopher"), url("../fonts/Philosopher.ttf") format("truetype");
 }
 @font-face {
   font-family: "Abuget";
-  src: local("Abuget"), url("../fonts/ABUGET.ttf") format("truetype");
+  src: local("Abuget"), url("../fonts/Abuget.ttf") format("truetype");
 }
 @font-face {
-  font-family: "Alexis Marie";
-  src: local("Alexis Marie"),
-    url("../fonts/Alexis Marie.ttf") format("truetype");
+  font-family: "AlexisMarie";
+  src: local("AlexisMarie"), url("../fonts/AlexisMarie.ttf") format("truetype");
 }
 @font-face {
   font-family: "Antonio";
-  src: local("Antonio"),
-    url("../fonts/Antonio-ExtraLight.ttf") format("truetype");
+  src: local("Antonio"), url("../fonts/Antonio.ttf") format("truetype");
 }
 @font-face {
   font-family: "Manta";
@@ -125,12 +127,15 @@
 }
 @font-face {
   font-family: "Wayfarer";
-  src: local("Wayfarer"),
-    url("../fonts/Wayfarer-Regular.otf") format("truetype");
+  src: local("Wayfarer"), url("../fonts/Wayfarer.otf") format("truetype");
 }
 @font-face {
   font-family: "Thunder";
-  src: local("Thunder"), url("../fonts/thunder.ttf") format("truetype");
+  src: local("Thunder"), url("../fonts/Thunder.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Poppins";
+  src: local("Poppins"), url("../fonts/Poppins.ttf") format("truetype");
 }
 .editor-component-wrap {
   display: flex;
@@ -1982,7 +1987,7 @@
 }
 .konvajs-content {
   //4-nov
-  height: calc(100vh - 60px) !important;
+  // height: calc(100vh - 60px) !important;
 }
 .respark_ColorPicker-action {
   gap: 7px;
@@ -2020,4 +2025,16 @@
   .konvajs-content {
     height: 45px !important;
   }
+}
+.upload-multi-image {
+  position: fixed;
+  top: 12px;
+  right: 40px;
+  background: red;
+  z-index: 17;
+  padding: 10px;
+  color: var(--primary-bg-color);
+  background: var(--theme-bg);
+  border: unset;
+  border-radius: 5px;
 }

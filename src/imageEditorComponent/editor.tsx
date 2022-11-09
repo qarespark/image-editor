@@ -245,7 +245,7 @@ function Editor({ props }: any = {}) {
             callback(img)
         }
         img.setAttribute('crossorigin', 'anonymous');
-        img.src = oldImag.src;
+        img.src = oldImag;
     }
     function getBase64Image(img: any, callback: any) {
         convert(img, function (newImg: any) {
@@ -261,7 +261,7 @@ function Editor({ props }: any = {}) {
     useEffect(() => {
         if (!waterMarks && document.getElementById("client-logo") && editorConfig.type) {
             if (document.getElementById("client-logo")) {
-                getBase64Image(document.getElementById("client-logo"), function (base64: any) {
+                getBase64Image(editorConfig.logo, function (base64: any) {
                     setWaterMarks(base64)
                 });
             }
@@ -285,7 +285,7 @@ function Editor({ props }: any = {}) {
         }
         if (showEditor) {
             setShowEditor(false);
-            setTimeout(() => setShowEditor(true), 1)
+            setTimeout(() => setShowEditor(true))
         }
     }, [activeTemplate])
 
@@ -462,6 +462,10 @@ function Editor({ props }: any = {}) {
 
     const onSelectBgImage = (url: any) => {
 
+        // getBase64Image(url, function (base64: any) {
+        //     setBgImage(base64)
+        // });
+
         const toDataURL = url => fetch(url)
             .then(response => response.blob())
             .then(blob => new Promise((resolve, reject) => {
@@ -603,9 +607,7 @@ function Editor({ props }: any = {}) {
                 template.image = imageData.imageBase64;
                 setActiveTemplateContext(template);
                 setActiveTemplate(template);
-                setShowEditor(false);
                 setCurrentId('');
-                setTimeout(() => setShowEditor(true), 1)
                 setShowAddTextModal(false)
             }
         })
@@ -773,38 +775,6 @@ function Editor({ props }: any = {}) {
                                 <div className='editor-root' ref={editorWrapRef}>
                                     {showTemplates && RenderTemplatesList()}
                                     {showBgImages && renderBackgroundsList()}
-                                    {/* <div className="actions-wrap">
-                                        <div className='btn-wrap'>
-                                            <div className='btn save-btn' id="save-btn" onClick={handleSaveClick}>
-                                                <div className="text">Save Image</div>
-                                                <div className="icon"><VscSaveAll /></div>
-                                            </div>
-                                            <Menu
-                                                className='menu-item-wrap'
-                                                id="save-menu"
-                                                anchorEl={anchorEl}
-                                                open={showSaveActionModal}
-                                                onClose={() => handleSaveClick('')}
-                                                MenuListProps={{ 'aria-labelledby': 'save-btn' }}>
-                                                <MenuItem id="add" className='menu-item' onClick={() => handleSaveClick('add')}>
-                                                    <div className="icon"><RiImageAddFill /></div>
-                                                    <div className="text">Save as new template</div>
-                                                </MenuItem>
-                                                {(editorConfig.tenantId == 0 ? true : activeTemplate.tenantId != 0) && <MenuItem id="update" className='menu-item' onClick={() => handleSaveClick('update')}>
-                                                    <div className="icon"><ImFilePicture /></div>
-                                                    <div className="text">Update selected template</div>
-                                                </MenuItem>}
-                                                {editorConfig.tenantId != 0 && <MenuItem id="download" className='menu-item' onClick={() => onSubmitImage()}>
-                                                    <div className="icon"><FcImageFile /></div>
-                                                    <div className="text">Submit Banner Image</div>
-                                                </MenuItem>}
-                                                <MenuItem id="download" className='menu-item' onClick={() => handleSaveClick('download')}>
-                                                    <div className="icon"><GoDesktopDownload /></div>
-                                                    <div className="text">Download</div>
-                                                </MenuItem>
-                                            </Menu>
-                                        </div>
-                                    </div> */}
                                     {showEditor && (
                                         <ImageEditor
                                             source={bgImage}
@@ -825,23 +795,24 @@ function Editor({ props }: any = {}) {
                                                 fontFamily: 'Poppins',
                                                 fonts: [
                                                     'Poppins',
-                                                    { label: 'Mvboli', value: 'Mvboli' },
-                                                    { label: 'Blackjack', value: 'Blackjack' },
-                                                    { label: 'Domaine', value: 'Domaine' },
-                                                    { label: 'Gothic', value: 'Gothic' },
-                                                    { label: 'Claredon', value: 'Claredon' },
-                                                    { label: 'ArgoFlats', value: 'ArgoFlats' },
-                                                    { label: 'Antonio', value: 'Antonio' },
-                                                    { label: 'Bakery', value: 'bakery' },
-                                                    { label: 'Allura', value: 'Allura' },
-                                                    { label: 'Lhandw', value: 'Lhandw' },
-                                                    { label: 'Fontspring', value: 'Fontspring' },
-                                                    { label: 'Philosopher', value: 'Philosopher' },
                                                     { label: 'Abuget', value: 'Abuget' },
-                                                    { label: 'Alexis Marie', value: 'Alexis Marie' },
+                                                    { label: 'AlexisMarie', value: 'AlexisMarie' },
+                                                    { label: 'Allura', value: 'Allura' },
+                                                    { label: 'Antonio', value: 'Antonio' },
+                                                    { label: 'ArgoFlats', value: 'ArgoFlats' },
+                                                    { label: 'Bakery', value: 'bakery' },
+                                                    { label: 'Blackjack', value: 'Blackjack' },
+                                                    { label: 'Claredon', value: 'Claredon' },
+                                                    { label: 'Domaine', value: 'Domaine' },
+                                                    { label: 'Enchanting', value: 'Enchanting' },
+                                                    { label: 'Fontspring', value: 'Fontspring' },
+                                                    { label: 'Gothic', value: 'Gothic' },
+                                                    { label: 'Lhandw', value: 'Lhandw' },
                                                     { label: 'Manta', value: 'Manta' },
-                                                    { label: 'Wayfarer', value: 'Wayfarer' },
+                                                    { label: 'Mvboli', value: 'Mvboli' },
+                                                    { label: 'Philosopher', value: 'Philosopher' },
                                                     { label: 'Thunder', value: 'Thunder' },
+                                                    { label: 'Wayfarer', value: 'Wayfarer' },
                                                 ],
                                                 fontSize: 40,
                                                 letterSpacing: 0,
@@ -863,8 +834,8 @@ function Editor({ props }: any = {}) {
                             </div>
                         </div>
 
-                        {/* <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={multiFileToBase64} multiple />
-                    <button className="upload-multi-image" onClick={() => document.getElementById('background-img').click()}>Upload multi images</button> */}
+                        {/* <input style={{ visibility: 'hidden' }} accept='image/*' type="file" id="background-img" onChange={uploadMultipleFilesToS3} multiple />
+                        <button className="upload-multi-image" onClick={() => document.getElementById('background-img').click()}>Upload multi images</button> */}
 
                         <HiddenUploadInput
                             ref={uploadImgsInput}
